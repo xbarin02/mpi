@@ -38,8 +38,8 @@ clean:
 distclean: clean
 	-$(RM) -- *.gcda gmon.out cachegrind.out.* callgrind.out.*
 
-main: main.o mpx.o
+main: main.o mpi.o
 
-main.o: main.c mpx.h
+main.o: main.c mpi.h
 
-mpx.o: mpx.c mpx.h
+mpi.o: mpi.c mpi.h

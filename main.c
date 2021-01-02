@@ -1,4 +1,4 @@
-#include "mpx.h"
+#include "mpi.h"
 #include <stdlib.h>
 #include <assert.h>
 
