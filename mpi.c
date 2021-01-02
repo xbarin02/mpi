@@ -2,18 +2,18 @@
 #include <stdlib.h>
 #include <assert.h>
 
-void mpx_init(mpx_t rop)
+void mpi_init(mpi_t rop)
 {
 	rop->nmemb = 0;
 	rop->data = NULL;
 }
 
-void mpx_clear(mpx_t rop)
+void mpi_clear(mpi_t rop)
 {
 	free(rop->data);
 }
 
-void mpx_enlarge(mpx_t rop, size_t nmemb)
+void mpi_enlarge(mpi_t rop, size_t nmemb)
 {
 	if (nmemb > rop->nmemb) {
 		size_t min = rop->nmemb;
@@ -37,11 +37,11 @@ static size_t ceil_div(size_t n, size_t d)
 	return (n + d) / d;
 }
 
-void mpx_set_u64(mpx_t rop, uint64_t op)
+void mpi_set_u64(mpi_t rop, uint64_t op)
 {
 	size_t nmemb = ceil_div(64, 31);
 
-	mpx_enlarge(rop, nmemb);
+	mpi_enlarge(rop, nmemb);
 
 	for (size_t n = 0; n < nmemb; ++n) {
 		rop->data[n] = op & 0x7fffffff;
@@ -53,11 +53,11 @@ void mpx_set_u64(mpx_t rop, uint64_t op)
 	}
 }
 
-void mpx_set_u32(mpx_t rop, uint32_t op)
+void mpi_set_u32(mpi_t rop, uint32_t op)
 {
 	size_t nmemb = ceil_div(32, 31);
 
-	mpx_enlarge(rop, nmemb);
+	mpi_enlarge(rop, nmemb);
 
 	for (size_t n = 0; n < nmemb; ++n) {
 		rop->data[n] = op & 0x7fffffff;
@@ -69,7 +69,7 @@ void mpx_set_u32(mpx_t rop, uint32_t op)
 	}
 }
 
-uint64_t mpx_get_u64(const mpx_t op)
+uint64_t mpi_get_u64(const mpi_t op)
 {
 	size_t nmemb = op->nmemb;
 
@@ -89,7 +89,7 @@ uint64_t mpx_get_u64(const mpx_t op)
 	return r;
 }
 
-uint32_t mpx_get_u32(const mpx_t op)
+uint32_t mpi_get_u32(const mpi_t op)
 {
 	size_t nmemb = op->nmemb;
 
@@ -109,16 +109,16 @@ uint32_t mpx_get_u32(const mpx_t op)
 	return r;
 }
 
-void mpx_add(mpx_t rop, const mpx_t op1, const mpx_t op2)
+void mpi_add(mpi_t rop, const mpi_t op1, const mpi_t op2)
 {
-	mpx_t l, r;
+	mpi_t l, r;
 
 	*l = (op1->nmemb < op2->nmemb) ? *op1 : *op2;
 	*r = (op1->nmemb < op2->nmemb) ? *op2 : *op1;
 
 	assert(l->nmemb <= r->nmemb);
 
-	mpx_enlarge(rop, r->nmemb);
+	mpi_enlarge(rop, r->nmemb);
 
 	uint64_t c = 0;
 
@@ -138,7 +138,7 @@ void mpx_add(mpx_t rop, const mpx_t op1, const mpx_t op2)
 
 	/* carry */
 	if (c != 0) {
-		mpx_enlarge(rop, r->nmemb + 1);
+		mpi_enlarge(rop, r->nmemb + 1);
 		rop->data[r->nmemb] = c;
 	}
 }

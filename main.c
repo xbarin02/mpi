@@ -16,48 +16,48 @@ int main()
 {
 	srand(42);
 
-	mpx_t r;
+	mpi_t r;
 
-	mpx_init(r);
+	mpi_init(r);
 
 	for (int i = 0; i < 10000; ++i) {
 		uint64_t a = rand_u64();
 
-		mpx_set_u64(r, a);
+		mpi_set_u64(r, a);
 
-		uint64_t b = mpx_get_u64(r);
+		uint64_t b = mpi_get_u64(r);
 
 		assert(a == b);
 	}
 
-	mpx_clear(r);
+	mpi_clear(r);
 
 /******************************************************************************/
 
-	mpx_t Rnd, Acc;
+	mpi_t Rnd, Acc;
 
-	mpx_init(Rnd);
-	mpx_init(Acc);
+	mpi_init(Rnd);
+	mpi_init(Acc);
 
 	for (int i = 0; i < 10000; ++i) {
 		uint64_t acc = 0;
-		mpx_set_u32(Acc, (uint32_t)0);
+		mpi_set_u32(Acc, (uint32_t)0);
 
 		for (int j = 0; j < 10000; ++j) {
 			uint32_t rnd = rand_u32();
 			acc += rnd;
 
-			mpx_set_u32(Rnd, rnd);
-			mpx_add(Acc, Acc, Rnd);
+			mpi_set_u32(Rnd, rnd);
+			mpi_add(Acc, Acc, Rnd);
 
-			uint64_t r = mpx_get_u64(Acc);
+			uint64_t r = mpi_get_u64(Acc);
 
 			assert(acc == r);
 		}
 	}
 
-	mpx_clear(Rnd);
-	mpx_clear(Acc);
+	mpi_clear(Rnd);
+	mpi_clear(Acc);
 
 	return 0;
 }
