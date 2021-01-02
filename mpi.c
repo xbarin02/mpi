@@ -247,3 +247,26 @@ void mpi_sub_u32(mpi_t rop, const mpi_t op1, uint32_t op2)
 		abort();
 	}
 }
+
+void mpi_mul_u32(mpi_t rop, const mpi_t op1, uint32_t op2)
+{
+	size_t nmemb = op1->nmemb + 1;
+
+	mpi_enlarge(rop, nmemb);
+
+	uint32_t c = 0;
+
+	/* op1 * op2 */
+	for (size_t n = 0; n < op1->nmemb; ++n) {
+		assert(op1->data[n] <= (UINT64_MAX - c) / op2);
+		uint64_t r = (uint64_t)op1->data[n] * op2 + c;
+		rop->data[n] = r & 0x7fffffff;
+		c = r >> 31;
+	}
+
+	while (c != 0) {
+		mpi_enlarge(rop, nmemb + 1);
+		rop->data[nmemb] = c & 0x7fffffff;
+		c >>= 31;
+	}
+}
