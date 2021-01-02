@@ -1,0 +1,74 @@
+#include "mpx.h"
+#include <stdlib.h>
+#include <assert.h>
+
+void mpx_init(mpx_t rop)
+{
+	rop->nmemb = 0;
+	rop->data = NULL;
+}
+
+void mpx_clear(mpx_t rop)
+{
+	free(rop->data);
+}
+
+void mpx_enlarge(mpx_t rop, size_t nmemb)
+{
+	if (nmemb > rop->nmemb) {
+		size_t min = rop->nmemb;
+
+		rop->nmemb = nmemb;
+
+		rop->data = realloc(rop->data, nmemb * sizeof(uint32_t));
+
+		if (rop->data == NULL) {
+			abort();
+		}
+
+		for (size_t n = min; n < nmemb; ++n) {
+			rop->data[n] = 0;
+		}
+	}
+}
+
+static size_t ceil_div(size_t n, size_t d)
+{
+	return (n + d) / d;
+}
+
+void mpz_set_u64(mpx_t rop, uint64_t op)
+{
+	size_t nmemb = ceil_div(64, 31);
+
+	mpx_enlarge(rop, nmemb);
+
+	for (size_t n = 0; n < nmemb; ++n) {
+		rop->data[n] = op & 0x7fffffff;
+		op >>= 31;
+	}
+
+	for (size_t n = nmemb; n < rop->nmemb; ++n) {
+		rop->data[n] = 0;
+	}
+}
+
+uint64_t mpz_get_u64(const mpx_t op)
+{
+	size_t nmemb = op->nmemb;
+
+	if (nmemb > ceil_div(64, 31)) {
+		nmemb = ceil_div(64, 31);
+	}
+
+	uint64_t r = 0;
+
+	assert(nmemb > 0);
+
+	for (size_t n = nmemb - 1; n != (size_t)-1; --n) {
+		r <<= 31;
+		r |= op->data[n];
+	}
+
+	return r;
+}
