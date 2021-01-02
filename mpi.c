@@ -136,9 +136,48 @@ void mpi_add(mpi_t rop, const mpi_t op1, const mpi_t op2)
 		rop->data[n] &= 0x7fffffff;
 	}
 
+	for (size_t n = r->nmemb; n < rop->nmemb; ++n) {
+		rop->data[n] = 0;
+	}
+
 	/* carry */
 	if (c != 0) {
 		mpi_enlarge(rop, r->nmemb + 1);
 		rop->data[r->nmemb] = c;
+	}
+}
+
+void mpi_add_u64(mpi_t rop, const mpi_t op1, uint64_t op2)
+{
+	size_t nmemb = op1->nmemb;
+
+	if (nmemb < ceil_div(64, 31)) {
+		nmemb = ceil_div(64, 31);
+	}
+
+	mpi_enlarge(rop, nmemb);
+
+	uint64_t c = 0;
+
+	/* l + r */
+	for (size_t n = 0; n < nmemb; ++n) {
+		rop->data[n] = c;
+		rop->data[n] += op2 & 0x7fffffff;
+		op2 >>= 31;
+		if (op1->nmemb <= nmemb) {
+			rop->data[n] += op1->data[n];
+		}
+		c = rop->data[n] >> 31;
+		rop->data[n] &= 0x7fffffff;
+	}
+
+	for (size_t n = nmemb; n < rop->nmemb; ++n) {
+		rop->data[n] = 0;
+	}
+
+	/* carry */
+	if (c != 0) {
+		mpi_enlarge(rop, nmemb + 1);
+		rop->data[nmemb] = c;
 	}
 }

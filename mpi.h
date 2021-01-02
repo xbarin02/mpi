@@ -22,5 +22,6 @@ uint64_t mpi_get_u64(const mpi_t op);
 uint32_t mpi_get_u32(const mpi_t op);
 
 void mpi_add(mpi_t rop, const mpi_t op1, const mpi_t op2);
+void mpi_add_u64(mpi_t rop, const mpi_t op1, uint64_t op2);
 
 #endif
