@@ -13,6 +13,16 @@ void mpi_clear(mpi_t rop)
 	free(rop->data);
 }
 
+/* extend the most significant element into another one */
+uint32_t extend(uint32_t mse)
+{
+	if (mse & 0x80000000) {
+		return 0x7fffffff;
+	} else {
+		return 0;
+	}
+}
+
 void mpi_enlarge(mpi_t rop, size_t nmemb)
 {
 	if (nmemb > rop->nmemb) {
@@ -26,8 +36,10 @@ void mpi_enlarge(mpi_t rop, size_t nmemb)
 			abort();
 		}
 
+		uint32_t e = min > 0 ? rop->data[min - 1] : 0;
+
 		for (size_t n = min; n < nmemb; ++n) {
-			rop->data[n] = 0;
+			rop->data[n] = extend(e);
 		}
 	}
 }
@@ -144,6 +156,29 @@ void mpi_add(mpi_t rop, const mpi_t op1, const mpi_t op2)
 	if (c != 0) {
 		mpi_enlarge(rop, r->nmemb + 1);
 		rop->data[r->nmemb] = c;
+	}
+}
+
+void mpi_sub(mpi_t rop, const mpi_t op1, const mpi_t op2)
+{
+	size_t nmemb = op1->nmemb > op2->nmemb ? op1->nmemb : op2->nmemb;
+
+	mpi_enlarge(rop, nmemb);
+
+	uint32_t c = 0;
+
+	/* op1 - op2 */
+	for (size_t n = 0; n < rop->nmemb; ++n) {
+		uint32_t r1 = (n < op1->nmemb) ? op1->data[n] : extend(op1->data[op1->nmemb - 1]);
+		uint32_t r2 = (n < op2->nmemb) ? op2->data[n] : extend(op2->data[op2->nmemb - 1]);
+		rop->data[n] = r1 - r2 - c;
+		c = rop->data[n] >> 31;
+		rop->data[n] &= 0x7fffffff;
+	}
+
+	if (c != 0) {
+		mpi_enlarge(rop, nmemb + 1);
+		rop->data[nmemb] = 0 - c;
 	}
 }
 
