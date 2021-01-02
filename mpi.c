@@ -161,14 +161,15 @@ void mpi_add_u64(mpi_t rop, const mpi_t op1, uint64_t op2)
 
 	/* l + r */
 	for (size_t n = 0; n < nmemb; ++n) {
-		rop->data[n] = c;
-		rop->data[n] += op2 & 0x7fffffff;
+		uint32_t acc = c;
+		acc = c;
+		acc += op2 & 0x7fffffff;
 		op2 >>= 31;
 		if (n < op1->nmemb) {
-			rop->data[n] += op1->data[n];
+			acc += op1->data[n];
 		}
-		c = rop->data[n] >> 31;
-		rop->data[n] &= 0x7fffffff;
+		c = acc >> 31;
+		rop->data[n] = acc & 0x7fffffff;
 	}
 
 	for (size_t n = nmemb; n < rop->nmemb; ++n) {
