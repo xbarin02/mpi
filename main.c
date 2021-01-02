@@ -1,6 +1,7 @@
 #include "mpi.h"
 #include <stdlib.h>
 #include <assert.h>
+#include <inttypes.h>
 
 uint32_t rand_u32()
 {
@@ -51,8 +52,10 @@ int main()
 		mpi_init(s);
 
 		mpi_set_str(s, "1234567890", 10);
-
 		assert((uint64_t)1234567890 == mpi_get_u64(s));
+
+		mpi_set_str(s, "18446744073709551615", 10);
+		assert(UINT64_C(18446744073709551615) == mpi_get_u64(s));
 
 		mpi_clear(s);
 	}
