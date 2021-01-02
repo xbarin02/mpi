@@ -34,7 +34,6 @@ int main()
 			mpi_init(t);
 			mpi_set_u32(t, rnd);
 			mpi_add(s1, s1, t);
-			/*mpi_add(s2, s2, t);*/
 			mpi_add_u32(s2, s2, rnd);
 			mpi_clear(t);
 		}
