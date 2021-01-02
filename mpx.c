@@ -37,7 +37,7 @@ static size_t ceil_div(size_t n, size_t d)
 	return (n + d) / d;
 }
 
-void mpz_set_u64(mpx_t rop, uint64_t op)
+void mpx_set_u64(mpx_t rop, uint64_t op)
 {
 	size_t nmemb = ceil_div(64, 31);
 
@@ -53,7 +53,23 @@ void mpz_set_u64(mpx_t rop, uint64_t op)
 	}
 }
 
-uint64_t mpz_get_u64(const mpx_t op)
+void mpx_set_u32(mpx_t rop, uint32_t op)
+{
+	size_t nmemb = ceil_div(32, 31);
+
+	mpx_enlarge(rop, nmemb);
+
+	for (size_t n = 0; n < nmemb; ++n) {
+		rop->data[n] = op & 0x7fffffff;
+		op >>= 31;
+	}
+
+	for (size_t n = nmemb; n < rop->nmemb; ++n) {
+		rop->data[n] = 0;
+	}
+}
+
+uint64_t mpx_get_u64(const mpx_t op)
 {
 	size_t nmemb = op->nmemb;
 
