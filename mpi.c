@@ -156,72 +156,48 @@ void mpi_sub(mpi_t rop, const mpi_t op1, const mpi_t op2)
 
 void mpi_add_u64(mpi_t rop, const mpi_t op1, uint64_t op2)
 {
-	size_t nmemb = op1->nmemb;
-
-	if (nmemb < ceil_div(64, 31)) {
-		nmemb = ceil_div(64, 31);
-	}
+	size_t nmemb = op1->nmemb > ceil_div(64, 31) ? op1->nmemb : ceil_div(64, 31);
 
 	mpi_enlarge(rop, nmemb);
 
 	uint32_t c = 0;
 
-	/* l + r */
-	for (size_t n = 0; n < nmemb; ++n) {
-		uint32_t acc = c;
-		acc = c;
-		acc += op2 & 0x7fffffff;
+	/* op1 + op2 */
+	for (size_t n = 0; n < rop->nmemb; ++n) {
+		uint32_t r1 = (n < op1->nmemb) ? op1->data[n] : 0;
+		uint32_t r2 = op2 & 0x7fffffff;
 		op2 >>= 31;
-		if (n < op1->nmemb) {
-			acc += op1->data[n];
-		}
-		c = acc >> 31;
-		rop->data[n] = acc & 0x7fffffff;
+		rop->data[n] = r1 + r2 + c;
+		c = rop->data[n] >> 31;
+		rop->data[n] &= 0x7fffffff;
 	}
 
-	for (size_t n = nmemb; n < rop->nmemb; ++n) {
-		rop->data[n] = 0;
-	}
-
-	/* carry */
 	if (c != 0) {
 		mpi_enlarge(rop, nmemb + 1);
-		rop->data[nmemb] = c;
+		rop->data[nmemb] = 0 + c;
 	}
 }
 
 void mpi_add_u32(mpi_t rop, const mpi_t op1, uint32_t op2)
 {
-	size_t nmemb = op1->nmemb;
-
-	if (nmemb < ceil_div(32, 31)) {
-		nmemb = ceil_div(32, 31);
-	}
+	size_t nmemb = op1->nmemb > ceil_div(32, 31) ? op1->nmemb : ceil_div(32, 31);
 
 	mpi_enlarge(rop, nmemb);
 
 	uint32_t c = 0;
 
-	/* l + r */
-	for (size_t n = 0; n < nmemb; ++n) {
-		uint32_t acc = c;
-		acc = c;
-		acc += op2 & 0x7fffffff;
+	/* op1 + op2 */
+	for (size_t n = 0; n < rop->nmemb; ++n) {
+		uint32_t r1 = (n < op1->nmemb) ? op1->data[n] : 0;
+		uint32_t r2 = op2 & 0x7fffffff;
 		op2 >>= 31;
-		if (n < op1->nmemb) {
-			acc += op1->data[n];
-		}
-		c = acc >> 31;
-		rop->data[n] = acc & 0x7fffffff;
+		rop->data[n] = r1 + r2 + c;
+		c = rop->data[n] >> 31;
+		rop->data[n] &= 0x7fffffff;
 	}
 
-	for (size_t n = nmemb; n < rop->nmemb; ++n) {
-		rop->data[n] = 0;
-	}
-
-	/* carry */
 	if (c != 0) {
 		mpi_enlarge(rop, nmemb + 1);
-		rop->data[nmemb] = c;
+		rop->data[nmemb] = 0 + c;
 	}
 }
