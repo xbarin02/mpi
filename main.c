@@ -43,7 +43,7 @@ int main()
 		uint64_t acc = 0;
 		mpx_set_u32(Acc, (uint32_t)0);
 
-		for (int j = 0; j < 1000; ++j) {
+		for (int j = 0; j < 10000; ++j) {
 			uint32_t rnd = rand_u32();
 			acc += rnd;
 

@@ -89,6 +89,26 @@ uint64_t mpx_get_u64(const mpx_t op)
 	return r;
 }
 
+uint32_t mpx_get_u32(const mpx_t op)
+{
+	size_t nmemb = op->nmemb;
+
+	if (nmemb > ceil_div(32, 31)) {
+		nmemb = ceil_div(32, 31);
+	}
+
+	uint32_t r = 0;
+
+	assert(nmemb > 0);
+
+	for (size_t n = nmemb - 1; n != (size_t)-1; --n) {
+		r <<= 31;
+		r |= op->data[n];
+	}
+
+	return r;
+}
+
 void mpx_add(mpx_t rop, const mpx_t op1, const mpx_t op2)
 {
 	mpx_t l, r;
