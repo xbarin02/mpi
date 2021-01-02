@@ -45,5 +45,17 @@ int main()
 		mpi_clear(s2);
 	}
 
+	{
+		mpi_t s;
+
+		mpi_init(s);
+
+		mpi_set_str(s, "1234567890", 10);
+
+		assert((uint64_t)1234567890 == mpi_get_u64(s));
+
+		mpi_clear(s);
+	}
+
 	return 0;
 }

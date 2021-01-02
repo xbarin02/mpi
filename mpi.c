@@ -1,6 +1,7 @@
 #include "mpi.h"
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 
 void mpi_init(mpi_t rop)
 {
@@ -269,4 +270,21 @@ void mpi_mul_u32(mpi_t rop, const mpi_t op1, uint32_t op2)
 		rop->data[nmemb] = c & 0x7fffffff;
 		c >>= 31;
 	}
+}
+
+int mpi_set_str(mpi_t rop, const char *str, int base)
+{
+	assert(base == 10);
+
+	size_t len = strlen(str);
+
+	mpi_set_u32(rop, (uint32_t)0);
+
+	for (size_t i = 0; i < len; ++i) {
+		mpi_mul_u32(rop, rop, (uint32_t)10);
+		assert(str[i] >= '0' && str[i] <= '9');
+		mpi_add_u32(rop, rop, (uint32_t)(str[i] - '0'));
+	}
+
+	return 0;
 }

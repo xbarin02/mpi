@@ -31,4 +31,6 @@ void mpi_sub_u32(mpi_t rop, const mpi_t op1, uint32_t op2);
 
 void mpi_mul_u32(mpi_t rop, const mpi_t op1, uint32_t op2);
 
+int mpi_set_str(mpi_t rop, const char *str, int base);
+
 #endif
