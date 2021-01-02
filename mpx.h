@@ -19,4 +19,6 @@ void mpz_set_u64(mpx_t rop, uint64_t op);
 
 uint64_t mpz_get_u64(const mpx_t op);
 
+void mpx_add(mpx_t rop, const mpx_t op1, const mpx_t op2);
+
 #endif

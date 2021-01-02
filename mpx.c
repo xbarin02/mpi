@@ -72,3 +72,37 @@ uint64_t mpz_get_u64(const mpx_t op)
 
 	return r;
 }
+
+void mpx_add(mpx_t rop, const mpx_t op1, const mpx_t op2)
+{
+	mpx_t l, r;
+
+	*l = (op1->nmemb < op2->nmemb) ? *op1 : *op2;
+	*r = (op1->nmemb < op2->nmemb) ? *op2 : *op1;
+
+	assert(l->nmemb <= r->nmemb);
+
+	mpx_enlarge(rop, r->nmemb);
+
+	uint64_t c = 0;
+
+	/* l + r */
+	for (size_t n = 0; n < l->nmemb; ++n) {
+		rop->data[n] = l->data[n] + r->data[n] + c;
+		c = rop->data[n] >> 31;
+		rop->data[n] &= 0x7fffffff;
+	}
+
+	/* r */
+	for (size_t n = l->nmemb; n < r->nmemb; ++n) {
+		rop->data[n] = r->data[n] + c;
+		c = rop->data[n] >> 31;
+		rop->data[n] &= 0x7fffffff;
+	}
+
+	/* carry */
+	if (c != 0) {
+		mpx_enlarge(rop, r->nmemb + 1);
+		rop->data[r->nmemb] = c;
+	}
+}
