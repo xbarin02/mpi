@@ -16,6 +16,38 @@ int main()
 {
 	srand(42);
 
+/******************************************************************************/
+
+	for (int i = 0; i < 10; ++i) {
+		mpi_t r;
+		mpi_init(r);
+
+		mpi_set_u64(r, rand_u64());
+		mpi_set_u64(r, (uint64_t)0);
+
+		uint64_t acc = 0;
+
+		for (int j = 0; j < 65536; ++j) {
+			uint32_t b = rand_u32();
+
+			acc += b;
+			mpi_add_u64(r, r, (uint64_t)b);
+
+			acc += b;
+			mpi_t t;
+			mpi_init(t);
+			mpi_set_u32(t, b);
+			mpi_add(r, r, t);
+			mpi_clear(t);
+		}
+
+		assert(acc == mpi_get_u64(r));
+
+		mpi_clear(r);
+	}
+
+/******************************************************************************/
+
 	mpi_t r;
 
 	mpi_init(r);
