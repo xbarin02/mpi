@@ -95,6 +95,102 @@ int main()
 {
 	srand(42);
 
+	printf("mpi_init, mpi_clear\n");
+	{
+		mpi_t r;
+		mpi_init(r);
+		mpi_clear(r);
+	}
+
+	printf("mpi_set_u32, mpi_get_u32\n");
+	{
+		mpi_t r;
+		mpi_init(r);
+		mpi_set_u32(r, UINT32_C(4294967295));
+		assert(mpi_get_u32(r) == UINT32_C(4294967295));
+		mpi_clear(r);
+	}
+
+	printf("mpi_set_u64, mpi_get_u64\n");
+	{
+		mpi_t r;
+		mpi_init(r);
+		mpi_set_u64(r, UINT64_C(0xFFFFFFFFFFFFFFFF));
+		assert(mpi_get_u64(r) == UINT64_C(0xFFFFFFFFFFFFFFFF));
+		mpi_clear(r);
+	}
+
+	printf("mpi_set_str\n");
+	{
+		mpi_t s;
+		mpi_init(s);
+
+		mpi_set_str(s, "1234567890", 10);
+		assert(UINT64_C(1234567890) == mpi_get_u64(s));
+
+		mpi_set_str(s, "18446744073709551615", 10);
+		assert(UINT64_C(18446744073709551615) == mpi_get_u64(s));
+
+		mpi_set_str(s, "0", 10);
+		assert(UINT64_C(0) == mpi_get_u64(s));
+
+		mpi_clear(s);
+	}
+
+	printf("mpi_add_u32\n");
+	{
+		mpi_t r, s;
+		mpi_init(r);
+		mpi_init(s);
+
+		mpi_set_str(r, "3433683820292512484657849089280", 10);
+		mpi_add_u32(r, r, UINT32_C(2172748161));
+
+		mpi_set_str(s, "3433683820292512484660021837441", 10);
+
+		assert(mpi_cmp(r, s) == 0);
+
+		mpi_clear(r);
+		mpi_clear(s);
+	}
+
+	printf("mpi_add_u64\n");
+	{
+		mpi_t r, s;
+		mpi_init(r);
+		mpi_init(s);
+
+		mpi_set_str(r, "3433683820292512484657849089280", 10);
+		mpi_add_u64(r, r, UINT64_C(142393223512449));
+
+		mpi_set_str(s, "3433683820292512627051072601729", 10);
+
+		assert(mpi_cmp(r, s) == 0);
+
+		mpi_clear(r);
+		mpi_clear(s);
+	}
+
+	printf("mpi_add\n");
+	{
+		mpi_t r, s, t;
+		mpi_init(r);
+		mpi_init(s);
+		mpi_init(t);
+
+		mpi_set_str(r, "3433683820292512484657849089280", 10);
+		mpi_set_str(t, "1144561273430837494885949696424", 10);
+		mpi_add(r, r, t);
+
+		mpi_set_str(s, "4578245093723349979543798785704", 10);
+
+		assert(mpi_cmp(r, s) == 0);
+
+		mpi_clear(r);
+		mpi_clear(s);
+		mpi_clear(t);
+	}
+
 	{
 		mpi_t s1, s2;
 
@@ -122,23 +218,6 @@ int main()
 
 		mpi_clear(s1);
 		mpi_clear(s2);
-	}
-
-	{
-		mpi_t s;
-
-		mpi_init(s);
-
-		mpi_set_str(s, "1234567890", 10);
-		assert(UINT64_C(1234567890) == mpi_get_u64(s));
-
-		mpi_set_str(s, "18446744073709551615", 10);
-		assert(UINT64_C(18446744073709551615) == mpi_get_u64(s));
-
-		mpi_set_str(s, "0", 10);
-		assert(UINT64_C(0) == mpi_get_u64(s));
-
-		mpi_clear(s);
 	}
 
 	{
