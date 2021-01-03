@@ -461,3 +461,27 @@ void mpi_fdiv_q_2exp(mpi_t q, const mpi_t n, mp_bitcnt_t b)
 
 	mpi_clear(tmp);
 }
+
+void mpi_fdiv_r_2exp(mpi_t r, const mpi_t n, mp_bitcnt_t b)
+{
+	size_t words = b / 31; /* shift by whole words/libs */
+	size_t bits = b % 31; /* and shift by bits */
+
+	size_t nmemb = words + 1;
+
+	mpi_t tmp;
+
+	mpi_init(tmp);
+
+	mpi_enlarge(tmp, nmemb);
+
+	for (size_t i = 0; i < words; ++i) {
+		tmp->data[i] = n->data[i];
+	}
+
+	tmp->data[words] = n->data[words] & ((UINT32_C(1) << bits) - 1);
+
+	mpi_set(r, tmp);
+
+	mpi_clear(tmp);
+}

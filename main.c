@@ -164,5 +164,20 @@ int main()
 		mpi_clear(r);
 	}
 
+	{
+		mpi_t r, s;
+
+		mpi_init(s);
+		mpi_init(r);
+
+		mpi_set_str(s, "42391158275216203514294433201", 10);
+		mpi_fdiv_r_2exp(s, s, 23);
+		mpi_set_str(r, "6419889", 10);
+		assert(0 == mpi_cmp(s, r));
+
+		mpi_clear(s);
+		mpi_clear(r);
+	}
+
 	return 0;
 }
