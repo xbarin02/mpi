@@ -64,6 +64,7 @@ int llt(mp_bitcnt_t p)
 	mpi_set_u32(s, 4);
 
 	for (size_t i = 0; i < p - 2; ++i) {
+// 		printf("%zu/%zu:\n", i, p - 2);
 		mpi_mul(s, s, s); /* s = s^2 */
 		mpi_add(s, s, m); /* s = s + m */
 		mpi_sub_u32(s, s, 2); /* s = s - 2 */
@@ -79,6 +80,7 @@ int llt(mp_bitcnt_t p)
 		mpi_clear(q);
 
 		while (mpi_cmp(s, m) >= 0) {
+// 			printf("sub %" PRIu64 "\n", mpi_get_u64(s));
 			mpi_sub(s, s, m);
 		}
 	}
@@ -285,6 +287,11 @@ int main()
 		mpi_set_str(r, "6419889", 10);
 		assert(mpi_cmp(s, r) == 0);
 
+		mpi_set_str(s, "42391158275216203514294433201", 10);
+		mpi_fdiv_r_2exp(s, s, 31);
+		mpi_set_str(r, "316798385", 10);
+		assert(mpi_cmp(s, r) == 0);
+
 		mpi_clear(s);
 		mpi_clear(r);
 	}
@@ -324,6 +331,7 @@ int main()
 		assert(llt(15) == 0);
 		assert(llt(17) == 1);
 		assert(llt(19) == 1);
+		assert(llt(31) == 1); /* BUG */
 	}
 
 	return 0;
