@@ -288,3 +288,60 @@ int mpi_set_str(mpi_t rop, const char *str, int base)
 
 	return 0;
 }
+
+void mpi_swap(mpi_t rop1, mpi_t rop2)
+{
+	mpi_t t;
+
+	*t = *rop1;
+	*rop1 = *rop2;
+	*rop2 = *t;
+}
+
+void mpi_set(mpi_t rop, const mpi_t op)
+{
+	mpi_enlarge(rop, op->nmemb);
+
+	for (size_t n = 0; n < op->nmemb; ++n) {
+		rop->data[n] = op->data[n];
+	}
+
+	for (size_t n = op->nmemb; n < rop->nmemb; ++n) {
+		rop->data[n] = 0;
+	}
+}
+
+void mpi_mul(mpi_t rop, const mpi_t op1, const mpi_t op2)
+{
+	size_t nmemb = op1->nmemb + op2->nmemb;
+
+	mpi_t tmp;
+
+	mpi_init(tmp);
+
+	mpi_enlarge(tmp, nmemb);
+
+	for (size_t n = 0; n < tmp->nmemb; ++n) {
+		tmp->data[n] = 0;
+	}
+
+	for (size_t n = 0; n < op1->nmemb; ++n) {
+		for (size_t m = 0; m < op2->nmemb; ++m) {
+			uint64_t r = (uint64_t)op1->data[n] * op2->data[m];
+			uint64_t c = 0;
+			for (size_t k = m + n; c != 0 || r != 0; ++k) {
+				if (k >= tmp->nmemb) {
+					mpi_enlarge(tmp, tmp->nmemb + 1);
+				}
+				tmp->data[k] += (r & 0x7fffffff) + c;
+				r >>= 31;
+				c = tmp->data[k] >> 31;
+				tmp->data[k] &= 0x7fffffff;
+			}
+		}
+	}
+
+	mpi_set(rop, tmp);
+
+	mpi_clear(tmp);
+}

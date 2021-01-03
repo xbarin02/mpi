@@ -25,7 +25,7 @@ int main()
 
 		uint32_t residue = rand_u32();
 
-		mpi_set_u32(s1, (uint32_t)0);
+		mpi_set_u32(s1, UINT32_C(0));
 		mpi_set_u32(s2, residue);
 
 		for (int j = 0; j < 10000; ++j) {
@@ -52,12 +52,21 @@ int main()
 		mpi_init(s);
 
 		mpi_set_str(s, "1234567890", 10);
-		assert((uint64_t)1234567890 == mpi_get_u64(s));
+		assert(UINT64_C(1234567890) == mpi_get_u64(s));
 
 		mpi_set_str(s, "18446744073709551615", 10);
 		assert(UINT64_C(18446744073709551615) == mpi_get_u64(s));
 
+		mpi_set_str(s, "0", 10);
+		assert(UINT64_C(0) == mpi_get_u64(s));
+
 		mpi_clear(s);
+	}
+
+	{
+		mpi_t r, s;
+
+		/* ... */
 	}
 
 	return 0;

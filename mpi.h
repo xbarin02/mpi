@@ -15,6 +15,7 @@ void mpi_init(mpi_t rop);
 
 void mpi_clear(mpi_t rop);
 
+void mpi_set(mpi_t rop, const mpi_t op);
 void mpi_set_u64(mpi_t rop, uint64_t op);
 void mpi_set_u32(mpi_t rop, uint32_t op);
 
@@ -32,5 +33,7 @@ void mpi_sub_u32(mpi_t rop, const mpi_t op1, uint32_t op2);
 void mpi_mul_u32(mpi_t rop, const mpi_t op1, uint32_t op2);
 
 int mpi_set_str(mpi_t rop, const char *str, int base);
+
+void mpi_swap(mpi_t rop1, mpi_t rop2);
 
 #endif
