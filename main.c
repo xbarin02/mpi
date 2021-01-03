@@ -273,7 +273,7 @@ int main()
 		assert(mpi_cmp(s, r) == 0);
 
 		mpi_set_str(s, "42391158275216203514294433201", 10);
-		mpi_fdiv_q_2exp(s, s, 31);
+		mpi_fdiv_q_2exp(s, s, 31); /* BUG */
 		mpi_set_str(r, "19739921332903301117", 10);
 		assert(mpi_cmp(s, r) == 0);
 
