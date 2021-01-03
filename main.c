@@ -137,6 +137,25 @@ int main()
 		mpi_clear(s);
 	}
 
+	printf("mpi_swap\n");
+	{
+		mpi_t r, s, t;
+
+		mpi_init(s);
+		mpi_init(r);
+		mpi_init(t);
+
+		mpi_set_str(s, "1853020188851841", 10);
+		mpi_set_str(r, "22876792454961", 10);
+		mpi_set_str(t, "22876792454961", 10);
+		mpi_swap(s, r);
+		assert(mpi_cmp(s, t) == 0);
+
+		mpi_clear(s);
+		mpi_clear(r);
+		mpi_clear(t);
+	}
+
 	printf("mpi_cmp\n");
 	{
 		mpi_t r, s;
@@ -240,46 +259,18 @@ int main()
 		mpi_clear(t);
 	}
 
-	{
-		mpi_t r, s, t;
-
-		mpi_init(s);
-		mpi_init(r);
-		mpi_init(t);
-
-		mpi_set_str(s, "1853020188851841", 10);
-		mpi_set_str(r, "22876792454961", 10);
-		mpi_set_str(t, "22876792454961", 10);
-
-		mpi_swap(s, r);
-
-		assert(0 == mpi_cmp(s, t));
-
-		mpi_clear(s);
-		mpi_clear(r);
-		mpi_clear(t);
-	}
-
+	printf("mpi_fdiv_q_2exp\n");
 	{
 		mpi_t r, s;
-
 		mpi_init(s);
 		mpi_init(r);
 
 		mpi_set_str(s, "42391158275216203514294433201", 10);
 		mpi_fdiv_q_2exp(s, s, 23);
 		mpi_set_str(r, "5053419861223245085989", 10);
-		assert(0 == mpi_cmp(s, r));
+		assert(mpi_cmp(s, r) == 0);
 
 		mpi_clear(s);
-		mpi_clear(r);
-	}
-
-	{
-		mpi_t r;
-		mpi_init(r);
-		mpi_set_str(r, "505341612", 10);
-		assert(0 == mpi_cmp_u32(r, UINT32_C(505341612)));
 		mpi_clear(r);
 	}
 
