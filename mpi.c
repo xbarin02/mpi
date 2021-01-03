@@ -33,6 +33,30 @@ void mpi_enlarge(mpi_t rop, size_t nmemb)
 	}
 }
 
+void mpi_compact(mpi_t rop)
+{
+	size_t nmemb = rop->nmemb;
+
+	if (rop->nmemb == 0) {
+		return;
+	}
+
+	for (size_t i = rop->nmemb - 1; i != (size_t)-1; --i) {
+		if (rop->data[i] == 0) {
+			nmemb--;
+		} else {
+			break;
+		}
+	}
+
+	rop->data = realloc(rop->data, nmemb * sizeof(uint32_t));
+	rop->nmemb = nmemb;
+
+	if (rop->data == NULL) {
+		abort();
+	}
+}
+
 static size_t ceil_div(size_t n, size_t d)
 {
 	return (n + d) / d;
@@ -342,6 +366,8 @@ void mpi_mul(mpi_t rop, const mpi_t op1, const mpi_t op2)
 	}
 
 	mpi_set(rop, tmp);
+
+	mpi_compact(rop);
 
 	mpi_clear(tmp);
 }

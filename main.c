@@ -234,7 +234,7 @@ int main()
 
 		mpi_init(res);
 
-		llt(res, 7);
+		llt(res, 17);
 
 		assert(0 == mpi_cmp_u32(res, 0));
 
