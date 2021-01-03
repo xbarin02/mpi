@@ -11,6 +11,8 @@ struct mpi {
 
 typedef struct mpi mpi_t[1];
 
+typedef size_t mp_bitcnt_t;
+
 void mpi_init(mpi_t rop);
 
 void mpi_clear(mpi_t rop);
@@ -41,5 +43,7 @@ int mpi_cmp(const mpi_t op1, const mpi_t op2);
 
 int mpi_odd_p(const mpi_t op);
 int mpi_even_p(const mpi_t op);
+
+void mpi_fdiv_q_2exp(mpi_t q, const mpi_t n, mp_bitcnt_t b);
 
 #endif

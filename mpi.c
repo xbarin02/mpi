@@ -387,3 +387,48 @@ int mpi_even_p(const mpi_t op)
 
 	return !(op->data[0] & 1);
 }
+
+uint64_t mpi_get_word(const mpi_t op, size_t n)
+{
+	uint64_t r = 0;
+
+	if (n + 0 < op->nmemb) {
+		r |= (uint64_t)op->data[n + 0];
+	}
+
+	if (n + 1 < op->nmemb) {
+		r |= (uint64_t)op->data[n + 1] << 31;
+	}
+
+	if (n + 2 < op->nmemb) {
+		r |= (uint64_t)op->data[n + 2] << 62;
+	}
+
+	return r;
+}
+
+void mpi_fdiv_q_2exp(mpi_t q, const mpi_t n, mp_bitcnt_t b)
+{
+	size_t words = b / 31; /* shift by whole words/libs */
+	size_t bits = b % 31; /* and shift by bits */
+
+	size_t nmemb = n->nmemb - words;
+
+	mpi_t tmp;
+
+	mpi_init(tmp);
+
+	mpi_enlarge(tmp, nmemb);
+
+	for (size_t i = 0; i < tmp->nmemb; ++i) {
+		uint32_t r = 0;
+		if (i >= words) {
+			r = (uint32_t)((mpi_get_word(n, i - words) >> bits) & 0x7fffffff);
+		}
+		tmp->data[i] = r;
+	}
+
+	mpi_set(q, tmp);
+
+	mpi_clear(tmp);
+}
