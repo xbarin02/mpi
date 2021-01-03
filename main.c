@@ -13,12 +13,22 @@ uint64_t rand_u64()
 	 return (uint64_t)rand() << 48 ^ (uint64_t)rand() << 24 ^ (uint64_t)rand();
 }
 
-/*void get_max(mpi_t max, mpi_t n0)
+void get_max(mpi_t max, mpi_t n)
 {
-	mpz_set(max, n0);
+	mpi_set(max, n);
 
-	while (
-}*/
+	while (0 != mpi_cmp_u32(n, 1)) {
+		if (mpi_odd_p(n)) {
+			mpi_mul_u32(n, n, 3);
+			mpi_add_u32(n, n, 1);
+		}
+		mpi_fdiv_q_2exp(n, n, 1);
+
+		if (mpi_cmp(n, max) > 0) {
+			mpi_set(max, n);
+		}
+	}
+}
 
 int main()
 {
@@ -131,6 +141,26 @@ int main()
 		mpi_init(r);
 		mpi_set_str(r, "505341612", 10);
 		assert(0 == mpi_cmp_u32(r, UINT32_C(505341612)));
+		mpi_clear(r);
+	}
+
+	{
+		mpi_t n, max, r;
+
+		mpi_init(n);
+		mpi_init(max);
+		mpi_init(r);
+
+		mpi_set_str(n, "274133054632352106267", 10);
+
+		get_max(max, n);
+
+		mpi_set_str(r, "56649062372194325899121269007146717645316", 10);
+
+		assert(0 == mpi_cmp(max, r));
+
+		mpi_clear(n);
+		mpi_clear(max);
 		mpi_clear(r);
 	}
 
