@@ -13,6 +13,13 @@ uint64_t rand_u64()
 	 return (uint64_t)rand() << 48 ^ (uint64_t)rand() << 24 ^ (uint64_t)rand();
 }
 
+/*void get_max(mpi_t max, mpi_t n0)
+{
+	mpz_set(max, n0);
+
+	while (
+}*/
+
 int main()
 {
 	srand(42);
@@ -116,6 +123,14 @@ int main()
 		assert(0 == mpi_cmp(s, r));
 
 		mpi_clear(s);
+		mpi_clear(r);
+	}
+
+	{
+		mpi_t r;
+		mpi_init(r);
+		mpi_set_str(r, "505341612", 10);
+		assert(0 == mpi_cmp_u32(r, UINT32_C(505341612)));
 		mpi_clear(r);
 	}
 

@@ -370,6 +370,35 @@ int mpi_cmp(const mpi_t op1, const mpi_t op2)
 	return 0;
 }
 
+int mpi_cmp_u32(const mpi_t op1, uint32_t op2)
+{
+	size_t nmemb = op1->nmemb;
+
+	if (nmemb == 0) {
+		return 0;
+	}
+
+	for (size_t n = nmemb - 1; n != (size_t)-1; --n) {
+		uint32_t r1 = (n < op1->nmemb) ? op1->data[n] : 0;
+		uint32_t r2 = 0;
+
+		switch (n) {
+			case 0: r2 = (op2      ) & 0x7fffffff; break;
+			case 1: r2 = (op2 >> 31) & 0x7fffffff; break;
+		}
+
+		if (r1 < r2) {
+			return -1;
+		}
+
+		if (r1 > r2) {
+			return +1;
+		}
+	}
+
+	return 0;
+}
+
 int mpi_odd_p(const mpi_t op)
 {
 	if (op->nmemb == 0) {
