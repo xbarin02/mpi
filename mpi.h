@@ -1,5 +1,5 @@
-#ifndef MPX_H
-#define MPX_H
+#ifndef MPI_H
+#define MPI_H
 
 #include <stddef.h>
 #include <stdint.h>
