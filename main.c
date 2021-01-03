@@ -31,6 +31,29 @@ void get_max(mpi_t max, mpi_t n)
 	}
 }
 
+int collatz_max(const char *n_str, const char *max_str)
+{
+	mpi_t n, max, r;
+
+	mpi_init(n);
+	mpi_init(max);
+	mpi_init(r);
+
+	mpi_set_str(n, n_str, 10);
+
+	get_max(max, n);
+
+	mpi_set_str(r, max_str, 10);
+
+	int ret = mpi_cmp(max, r) == 0;
+
+	mpi_clear(n);
+	mpi_clear(max);
+	mpi_clear(r);
+
+	return ret;
+}
+
 int llt(mp_bitcnt_t p)
 {
 	mpi_t s;
@@ -188,23 +211,7 @@ int main()
 	}
 
 	{
-		mpi_t n, max, r;
-
-		mpi_init(n);
-		mpi_init(max);
-		mpi_init(r);
-
-		mpi_set_str(n, "274133054632352106267", 10);
-
-		get_max(max, n);
-
-		mpi_set_str(r, "56649062372194325899121269007146717645316", 10);
-
-		assert(0 == mpi_cmp(max, r));
-
-		mpi_clear(n);
-		mpi_clear(max);
-		mpi_clear(r);
+		assert(collatz_max("274133054632352106267", "56649062372194325899121269007146717645316"));
 	}
 
 	{
