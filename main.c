@@ -216,19 +216,23 @@ int main()
 		mpi_clear(r);
 	}
 
-	/*{
+	{
 		mpi_t res, nz;
 
 		mpi_init(res);
 		mpi_init(nz);
 
+		mpi_set_u32(nz, 1);
+		mpi_mul_2exp(nz, nz, 7);
+		mpi_sub_u32(nz, nz, 1);
+
 		llt(res, 7);
 
-		assert(0 == mpi_cmp_u32(res, 0));
+		assert(0 == mpi_cmp_u32(res, 0) || 0 == mpi_cmp(res, nz));
 
 		mpi_clear(res);
 		mpi_clear(nz);
-	}*/
+	}
 
 	{
 		mpi_t r, s;
