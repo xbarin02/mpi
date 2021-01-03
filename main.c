@@ -31,7 +31,7 @@ void get_max(mpi_t max, mpi_t n)
 	}
 }
 
-void llt(mpi_t res, mp_bitcnt_t p)
+int llt(mp_bitcnt_t p)
 {
 	mpi_t s;
 	mpi_t m;
@@ -63,14 +63,14 @@ void llt(mpi_t res, mp_bitcnt_t p)
 		while (mpi_cmp(s, m) >= 0) {
 			mpi_sub(s, s, m);
 		}
-
-		printf("%" PRIu64 "\n", mpi_get_u64(s));
 	}
 
-	mpi_set(res, s);
+	int r = 0 == mpi_cmp_u32(s, 0);
 
 	mpi_clear(s);
 	mpi_clear(m);
+
+	return r;
 }
 
 int main()
@@ -223,15 +223,15 @@ int main()
 	}
 
 	{
-		mpi_t res;
-
-		mpi_init(res);
-
-		llt(res, 17);
-
-		assert(0 == mpi_cmp_u32(res, 0));
-
-		mpi_clear(res);
+		assert(llt(3) == 1);
+		assert(llt(5) == 1);
+		assert(llt(7) == 1);
+		assert(llt(9) == 0);
+		assert(llt(11) == 0);
+		assert(llt(13) == 1);
+		assert(llt(15) == 0);
+		assert(llt(17) == 1);
+		assert(llt(19) == 1);
 	}
 
 	{
