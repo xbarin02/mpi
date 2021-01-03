@@ -274,27 +274,42 @@ int main()
 		mpi_clear(r);
 	}
 
-	{
-		assert(collatz_max("35136221158664800255", "92102545196486820634779928066830214436"));
-		assert(collatz_max("48503373501652785087", "296696710908147364747230298439288489642"));
-		assert(collatz_max("55247846101001863167", "482192631091346876742345874501396316228"));
-		assert(collatz_max("71149323674102624415", "4527691962113372170289733115168874698466"));
-		assert(collatz_max("274133054632352106267", "56649062372194325899121269007146717645316"));
-	}
-
+	printf("mpi_fdiv_r_2exp\n");
 	{
 		mpi_t r, s;
-
 		mpi_init(s);
 		mpi_init(r);
 
 		mpi_set_str(s, "42391158275216203514294433201", 10);
 		mpi_fdiv_r_2exp(s, s, 23);
 		mpi_set_str(r, "6419889", 10);
-		assert(0 == mpi_cmp(s, r));
+		assert(mpi_cmp(s, r) == 0);
 
 		mpi_clear(s);
 		mpi_clear(r);
+	}
+
+	printf("mpi_mul_2exp\n");
+	{
+		mpi_t r, s;
+		mpi_init(r);
+		mpi_init(s);
+
+		mpi_set_u32(r, 123456);
+		mpi_mul_2exp(r, r, 89);
+		mpi_set_str(s, "76415562745007953608973140099072", 10);
+		assert(mpi_cmp(r, s) == 0);
+
+		mpi_clear(r);
+		mpi_clear(s);
+	}
+
+	{
+		assert(collatz_max("35136221158664800255", "92102545196486820634779928066830214436"));
+		assert(collatz_max("48503373501652785087", "296696710908147364747230298439288489642"));
+		assert(collatz_max("55247846101001863167", "482192631091346876742345874501396316228"));
+		assert(collatz_max("71149323674102624415", "4527691962113372170289733115168874698466"));
+		assert(collatz_max("274133054632352106267", "56649062372194325899121269007146717645316"));
 	}
 
 	{
@@ -307,23 +322,6 @@ int main()
 		assert(llt(15) == 0);
 		assert(llt(17) == 1);
 		assert(llt(19) == 1);
-	}
-
-	{
-		mpi_t r, s;
-
-		mpi_init(r);
-		mpi_init(s);
-
-		mpi_set_u32(r, 123456);
-		mpi_mul_2exp(r, r, 89);
-
-		mpi_set_str(s, "76415562745007953608973140099072", 10);
-
-		assert(0 == mpi_cmp(r, s));
-
-		mpi_clear(r);
-		mpi_clear(s);
 	}
 
 	return 0;
