@@ -191,6 +191,23 @@ int main()
 		mpi_clear(t);
 	}
 
+	printf("mpi_cmp\n");
+	{
+		mpi_t r, s;
+		mpi_init(r);
+		mpi_init(s);
+
+		mpi_set_str(r, "3433683820292512484657849089280", 10);
+		mpi_set_str(s, "3433683820292512484657849089279", 10);
+
+		assert(mpi_cmp(r, r) == 0);
+		assert(mpi_cmp(r, s) > 0);
+		assert(mpi_cmp(s, r) < 0);
+
+		mpi_clear(r);
+		mpi_clear(s);
+	}
+
 	{
 		mpi_t s1, s2;
 
