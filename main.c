@@ -137,6 +137,36 @@ int main()
 		mpi_clear(s);
 	}
 
+	printf("mpi_cmp\n");
+	{
+		mpi_t r, s;
+		mpi_init(r);
+		mpi_init(s);
+
+		mpi_set_str(r, "3433683820292512484657849089280", 10);
+		mpi_set_str(s, "3433683820292512484657849089279", 10);
+
+		assert(mpi_cmp(r, r) == 0);
+		assert(mpi_cmp(r, s) > 0);
+		assert(mpi_cmp(s, r) < 0);
+
+		mpi_clear(r);
+		mpi_clear(s);
+	}
+
+	printf("mpi_cmp_u32\n");
+	{
+		mpi_t r;
+		mpi_init(r);
+
+		mpi_set_str(r, "123456", 10);
+		assert(mpi_cmp_u32(r, UINT32_C(123456)) == 0);
+		assert(mpi_cmp_u32(r, UINT32_C(123455)) > 0);
+		assert(mpi_cmp_u32(r, UINT32_C(123457)) < 0);
+
+		mpi_clear(r);
+	}
+
 	printf("mpi_add_u32\n");
 	{
 		mpi_t r, s;
@@ -191,65 +221,7 @@ int main()
 		mpi_clear(t);
 	}
 
-	printf("mpi_cmp\n");
-	{
-		mpi_t r, s;
-		mpi_init(r);
-		mpi_init(s);
-
-		mpi_set_str(r, "3433683820292512484657849089280", 10);
-		mpi_set_str(s, "3433683820292512484657849089279", 10);
-
-		assert(mpi_cmp(r, r) == 0);
-		assert(mpi_cmp(r, s) > 0);
-		assert(mpi_cmp(s, r) < 0);
-
-		mpi_clear(r);
-		mpi_clear(s);
-	}
-
-	printf("mpi_cmp_u32\n");
-	{
-		mpi_t r;
-		mpi_init(r);
-
-		mpi_set_str(r, "123456", 10);
-		assert(mpi_cmp_u32(r, UINT32_C(123456)) == 0);
-		assert(mpi_cmp_u32(r, UINT32_C(123455)) > 0);
-		assert(mpi_cmp_u32(r, UINT32_C(123457)) < 0);
-
-		mpi_clear(r);
-	}
-
-	{
-		mpi_t s1, s2;
-
-		mpi_init(s1);
-		mpi_init(s2);
-
-		uint32_t residue = rand_u32();
-
-		mpi_set_u32(s1, UINT32_C(0));
-		mpi_set_u32(s2, residue);
-
-		for (int j = 0; j < 10000; ++j) {
-			uint32_t rnd = rand_u32();
-
-			mpi_t t;
-			mpi_init(t);
-			mpi_set_u32(t, rnd);
-			mpi_add(s1, s1, t);
-			mpi_add_u32(s2, s2, rnd);
-			mpi_clear(t);
-		}
-
-		mpi_sub(s2, s2, s1);
-		assert(residue == mpi_get_u64(s2));
-
-		mpi_clear(s1);
-		mpi_clear(s2);
-	}
-
+	printf("mpi_mul\n");
 	{
 		mpi_t r, s, t;
 
@@ -259,12 +231,9 @@ int main()
 
 		mpi_set_str(s, "1853020188851841", 10);
 		mpi_set_str(r, "22876792454961", 10);
-
 		mpi_set_str(t, "42391158275216203514294433201", 10);
-
 		mpi_mul(r, r, s);
-
-		assert(0 == mpi_cmp(r, t));
+		assert(mpi_cmp(r, t) == 0);
 
 		mpi_clear(s);
 		mpi_clear(r);
