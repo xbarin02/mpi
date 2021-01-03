@@ -14,8 +14,16 @@ uint64_t rand_u64()
 	 return (uint64_t)rand() << 48 ^ (uint64_t)rand() << 24 ^ (uint64_t)rand();
 }
 
-void get_max(mpi_t max, mpi_t n)
+int collatz_max(const char *n_str, const char *max_str)
 {
+	mpi_t n, max, r;
+
+	mpi_init(n);
+	mpi_init(max);
+	mpi_init(r);
+
+	mpi_set_str(n, n_str, 10);
+
 	mpi_set(max, n);
 
 	while (0 != mpi_cmp_u32(n, 1)) {
@@ -29,19 +37,6 @@ void get_max(mpi_t max, mpi_t n)
 			mpi_set(max, n);
 		}
 	}
-}
-
-int collatz_max(const char *n_str, const char *max_str)
-{
-	mpi_t n, max, r;
-
-	mpi_init(n);
-	mpi_init(max);
-	mpi_init(r);
-
-	mpi_set_str(n, n_str, 10);
-
-	get_max(max, n);
 
 	mpi_set_str(r, max_str, 10);
 
