@@ -485,3 +485,31 @@ void mpi_fdiv_r_2exp(mpi_t r, const mpi_t n, mp_bitcnt_t b)
 
 	mpi_clear(tmp);
 }
+
+void mpi_mul_2exp(mpi_t rop, const mpi_t op1, mp_bitcnt_t op2)
+{
+	size_t words = ceil_div(op2, 31); /* shift left by whole words/libs */
+	size_t bits = (31 - op2 % 31) % 31; /* and shift right by bits */
+
+	size_t nmemb = op1->nmemb + words;
+
+	mpi_t tmp;
+
+	mpi_init(tmp);
+
+	mpi_enlarge(tmp, nmemb);
+
+	for (size_t i = 0; i < words; ++i) {
+		tmp->data[i] = 0;
+	}
+
+	for (size_t i = words; i < tmp->nmemb; ++i) {
+		tmp->data[i] = op1->data[i - words];
+	}
+
+	mpi_fdiv_q_2exp(tmp, tmp, bits);
+
+	mpi_set(rop, tmp);
+
+	mpi_clear(tmp);
+}

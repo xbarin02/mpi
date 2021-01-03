@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <inttypes.h>
+#include <stdio.h>
 
 uint32_t rand_u32()
 {
@@ -28,6 +29,42 @@ void get_max(mpi_t max, mpi_t n)
 			mpi_set(max, n);
 		}
 	}
+}
+
+void llt(mpi_t res, mp_bitcnt_t p)
+{
+	mpi_t s;
+
+	mpi_init(s);
+
+	mpi_set_u32(s, 4);
+
+	for (size_t i = 0; i < p - 2; ++i) {
+		mpi_mul(s, s, s); /* s = s^2 */
+		mpi_sub_u32(s, s, 2); /* s = s - 2 */
+
+		while (1) {
+			mpi_t q;
+			mpi_init(q);
+
+			mpi_fdiv_q_2exp(q, s, p);
+
+			if (0 == mpi_cmp_u32(q, 0)) {
+				break;
+			}
+
+			mpi_fdiv_r_2exp(s, s, p);
+			mpi_add(s, s, q);
+
+			mpi_clear(q);
+		}
+
+		printf("%" PRIu64 "\n", mpi_get_u64(s));
+	}
+
+	mpi_set(res, s);
+
+	mpi_clear(s);
 }
 
 int main()
@@ -177,6 +214,37 @@ int main()
 
 		mpi_clear(s);
 		mpi_clear(r);
+	}
+
+	/*{
+		mpi_t res, nz;
+
+		mpi_init(res);
+		mpi_init(nz);
+
+		llt(res, 7);
+
+		assert(0 == mpi_cmp_u32(res, 0));
+
+		mpi_clear(res);
+		mpi_clear(nz);
+	}*/
+
+	{
+		mpi_t r, s;
+
+		mpi_init(r);
+		mpi_init(s);
+
+		mpi_set_u32(r, 123456);
+		mpi_mul_2exp(r, r, 89);
+
+		mpi_set_str(s, "76415562745007953608973140099072", 10);
+
+		assert(0 == mpi_cmp(r, s));
+
+		mpi_clear(r);
+		mpi_clear(s);
 	}
 
 	return 0;

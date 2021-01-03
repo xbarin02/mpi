@@ -45,6 +45,7 @@ void mpi_sub_u32(mpi_t rop, const mpi_t op1, uint32_t op2);
 
 void mpi_mul(mpi_t rop, const mpi_t op1, const mpi_t op2);
 void mpi_mul_u32(mpi_t rop, const mpi_t op1, uint32_t op2);
+void mpi_mul_2exp(mpi_t rop, const mpi_t op1, mp_bitcnt_t op2);
 
 /* Division Functions */
 
