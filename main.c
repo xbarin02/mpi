@@ -304,6 +304,7 @@ int main()
 		mpi_clear(s);
 	}
 
+	printf("Collatz problem\n");
 	{
 		assert(collatz_max("35136221158664800255", "92102545196486820634779928066830214436"));
 		assert(collatz_max("48503373501652785087", "296696710908147364747230298439288489642"));
@@ -312,6 +313,7 @@ int main()
 		assert(collatz_max("274133054632352106267", "56649062372194325899121269007146717645316"));
 	}
 
+	printf("Lucas-Lehmer test\n");
 	{
 		assert(llt(3) == 1);
 		assert(llt(5) == 1);
