@@ -44,7 +44,8 @@ void llt(mpi_t res, mp_bitcnt_t p)
 		mpi_sub_u32(s, s, 2); /* s = s - 2 */
 
 		while (1) {
-			mpi_t q;
+			mpi_t q, nz;
+
 			mpi_init(q);
 
 			mpi_fdiv_q_2exp(q, s, p);
@@ -55,6 +56,18 @@ void llt(mpi_t res, mp_bitcnt_t p)
 
 			mpi_fdiv_r_2exp(s, s, p);
 			mpi_add(s, s, q);
+
+			mpi_init(nz);
+
+			mpi_set_u32(nz, 1);
+			mpi_mul_2exp(nz, nz, p);
+			mpi_sub_u32(nz, nz, 1);
+
+			if (mpi_cmp(s, nz) == 0) {
+				mpi_set_u32(s, 0);
+			}
+
+			mpi_clear(nz);
 
 			mpi_clear(q);
 		}
@@ -217,21 +230,15 @@ int main()
 	}
 
 	{
-		mpi_t res, nz;
+		mpi_t res;
 
 		mpi_init(res);
-		mpi_init(nz);
-
-		mpi_set_u32(nz, 1);
-		mpi_mul_2exp(nz, nz, 7);
-		mpi_sub_u32(nz, nz, 1);
 
 		llt(res, 7);
 
-		assert(0 == mpi_cmp_u32(res, 0) || 0 == mpi_cmp(res, nz));
+		assert(0 == mpi_cmp_u32(res, 0));
 
 		mpi_clear(res);
-		mpi_clear(nz);
 	}
 
 	{
