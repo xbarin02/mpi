@@ -83,12 +83,12 @@ int llt(mp_bitcnt_t p)
 		}
 	}
 
-	int r = 0 == mpi_cmp_u32(s, 0);
+	int ret = mpi_cmp_u32(s, 0) == 0;
 
 	mpi_clear(s);
 	mpi_clear(m);
 
-	return r;
+	return ret;
 }
 
 int main()
