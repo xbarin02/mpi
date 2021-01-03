@@ -476,10 +476,8 @@ void mpi_fdiv_q_2exp(mpi_t q, const mpi_t n, mp_bitcnt_t b)
 	mpi_enlarge(tmp, nmemb);
 
 	for (size_t i = 0; i < tmp->nmemb; ++i) {
-		uint32_t r = 0;
-		if (i >= words) {
-			r = (uint32_t)((mpi_get_word(n, i - words) >> bits) & 0x7fffffff);
-		}
+		uint32_t r = (uint32_t)((mpi_get_word(n, i + words) >> bits) & 0x7fffffff);
+
 		tmp->data[i] = r;
 	}
 
