@@ -39,4 +39,7 @@ void mpi_swap(mpi_t rop1, mpi_t rop2);
 
 int mpi_cmp(const mpi_t op1, const mpi_t op2);
 
+int mpi_odd_p(const mpi_t op);
+int mpi_even_p(const mpi_t op);
+
 #endif

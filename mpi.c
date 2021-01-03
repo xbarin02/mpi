@@ -369,3 +369,21 @@ int mpi_cmp(const mpi_t op1, const mpi_t op2)
 
 	return 0;
 }
+
+int mpi_odd_p(const mpi_t op)
+{
+	if (op->nmemb == 0) {
+		return 0;
+	}
+
+	return op->data[0] & 1;
+}
+
+int mpi_even_p(const mpi_t op)
+{
+	if (op->nmemb == 0) {
+		return 1;
+	}
+
+	return !(op->data[0] & 1);
+}
