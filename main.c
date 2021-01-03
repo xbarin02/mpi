@@ -64,9 +64,24 @@ int main()
 	}
 
 	{
-		mpi_t r, s;
+		mpi_t r, s, t;
 
-		/* ... */
+		mpi_init(s);
+		mpi_init(r);
+		mpi_init(t);
+
+		mpi_set_str(s, "1853020188851841", 10);
+		mpi_set_str(r, "22876792454961", 10);
+
+		mpi_set_str(t, "42391158275216203514294433201", 10);
+
+		mpi_mul(r, r, s);
+
+		assert(0 == mpi_cmp(r, t));
+
+		mpi_clear(s);
+		mpi_clear(r);
+		mpi_clear(t);
 	}
 
 	return 0;

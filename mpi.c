@@ -345,3 +345,27 @@ void mpi_mul(mpi_t rop, const mpi_t op1, const mpi_t op2)
 
 	mpi_clear(tmp);
 }
+
+int mpi_cmp(const mpi_t op1, const mpi_t op2)
+{
+	size_t nmemb = op1->nmemb > op2->nmemb ? op1->nmemb : op2->nmemb;
+
+	if (nmemb == 0) {
+		return 0;
+	}
+
+	for (size_t n = nmemb - 1; n != (size_t)-1; --n) {
+		uint32_t r1 = (n < op1->nmemb) ? op1->data[n] : 0;
+		uint32_t r2 = (n < op2->nmemb) ? op2->data[n] : 0;
+
+		if (r1 < r2) {
+			return -1;
+		}
+
+		if (r1 > r2) {
+			return +1;
+		}
+	}
+
+	return 0;
+}

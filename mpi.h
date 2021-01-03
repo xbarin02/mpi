@@ -30,10 +30,13 @@ void mpi_sub(mpi_t rop, const mpi_t op1, const mpi_t op2);
 void mpi_sub_u64(mpi_t rop, const mpi_t op1, uint64_t op2);
 void mpi_sub_u32(mpi_t rop, const mpi_t op1, uint32_t op2);
 
+void mpi_mul(mpi_t rop, const mpi_t op1, const mpi_t op2);
 void mpi_mul_u32(mpi_t rop, const mpi_t op1, uint32_t op2);
 
 int mpi_set_str(mpi_t rop, const char *str, int base);
 
 void mpi_swap(mpi_t rop1, mpi_t rop2);
+
+int mpi_cmp(const mpi_t op1, const mpi_t op2);
 
 #endif
