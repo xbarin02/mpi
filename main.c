@@ -208,6 +208,19 @@ int main()
 		mpi_clear(s);
 	}
 
+	printf("mpi_cmp_u32\n");
+	{
+		mpi_t r;
+		mpi_init(r);
+
+		mpi_set_str(r, "123456", 10);
+		assert(mpi_cmp_u32(r, UINT32_C(123456)) == 0);
+		assert(mpi_cmp_u32(r, UINT32_C(123455)) > 0);
+		assert(mpi_cmp_u32(r, UINT32_C(123457)) < 0);
+
+		mpi_clear(r);
+	}
+
 	{
 		mpi_t s1, s2;
 
