@@ -400,6 +400,16 @@ int main()
 		mpi_set_str(r, "532977875988389130162", 10);
 		assert(mpi_cmp(s, r) == 0);
 
+		mpi_set_str(s, "1144561273430837494885949696425", 10);
+		mpi_fdiv_q_2exp(s, s, 100);
+		mpi_set_str(r, "0", 10);
+		assert(mpi_cmp(s, r) == 0);
+
+		mpi_set_str(s, "1144561273430837494885949696425", 10);
+		mpi_fdiv_q_2exp(s, s, 200);
+		mpi_set_str(r, "0", 10);
+		assert(mpi_cmp(s, r) == 0);
+
 		mpi_clear(s);
 		mpi_clear(r);
 	}
