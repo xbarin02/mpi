@@ -583,6 +583,9 @@ int main()
 		assert(llt(2203) == 1);
 		assert(llt(2281) == 1);
 		assert(llt(3217) == 1);
+		assert(llt(4253) == 1);
+		assert(llt(4423) == 1);
+		assert(llt(9689) == 1);
 	}
 
 	return 0;

@@ -160,6 +160,8 @@ void mpi_add(mpi_t rop, const mpi_t op1, const mpi_t op2)
 		mpi_enlarge(rop, nmemb + 1);
 		rop->data[nmemb] = 0 + c;
 	}
+
+	mpi_compact(rop);
 }
 
 void mpi_sub(mpi_t rop, const mpi_t op1, const mpi_t op2)
@@ -182,6 +184,8 @@ void mpi_sub(mpi_t rop, const mpi_t op1, const mpi_t op2)
 	if (c != 0) {
 		abort();
 	}
+
+	mpi_compact(rop);
 }
 
 void mpi_add_u64(mpi_t rop, const mpi_t op1, uint64_t op2)
@@ -380,7 +384,7 @@ void mpi_mul_naive(mpi_t rop, const mpi_t op1, const mpi_t op2)
 void mpi_mul_karatsuba(mpi_t rop, const mpi_t op1, const mpi_t op2)
 {
 	/* end recursion */
-	if (op1->nmemb < 4 || op2->nmemb < 4) {
+	if (op1->nmemb < 64 || op2->nmemb < 64) {
 		mpi_mul_naive(rop, op1, op2);
 		return;
 	}
@@ -447,7 +451,7 @@ void mpi_mul_karatsuba(mpi_t rop, const mpi_t op1, const mpi_t op2)
 
 void mpi_mul(mpi_t rop, const mpi_t op1, const mpi_t op2)
 {
-	mpi_mul_naive(rop, op1, op2);
+	mpi_mul_karatsuba(rop, op1, op2);
 }
 
 int mpi_cmp(const mpi_t op1, const mpi_t op2)
@@ -586,6 +590,8 @@ void mpi_fdiv_r_2exp(mpi_t r, const mpi_t n, mp_bitcnt_t b)
 	mpi_set(r, tmp);
 
 	mpi_clear(tmp);
+
+	mpi_compact(r);
 }
 
 void mpi_mul_2exp(mpi_t rop, const mpi_t op1, mp_bitcnt_t op2)
