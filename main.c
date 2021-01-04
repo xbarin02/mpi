@@ -355,6 +355,11 @@ int main()
 		mpi_set_str(r, "4294967295", 10);
 		assert(mpi_cmp(s, r) == 0);
 
+		mpi_set_str(s, "1144561273430837494885949696425", 10);
+		mpi_fdiv_q_2exp(s, s, 31);
+		mpi_set_str(r, "532977875988389130162", 10);
+		assert(mpi_cmp(s, r) == 0);
+
 		mpi_clear(s);
 		mpi_clear(r);
 	}
@@ -385,6 +390,11 @@ int main()
 		mpi_set_str(r, "820921440", 10);
 		assert(mpi_cmp(s, r) == 0);
 
+		mpi_set_str(s, "1144561273430837494885949696425", 10);
+		mpi_fdiv_r_2exp(s, s, 31);
+		mpi_set_str(r, "2111105449", 10);
+		assert(mpi_cmp(s, r) == 0);
+
 		mpi_clear(s);
 		mpi_clear(r);
 	}
@@ -400,8 +410,32 @@ int main()
 		mpi_set_str(s, "76415562745007953608973140099072", 10);
 		assert(mpi_cmp(r, s) == 0);
 
+		mpi_set_str(r, "532977875988389130162", 10);
+		mpi_mul_2exp(r, r, 31);
+		mpi_set_str(s, "1144561273430837494883838590976", 10);
+		assert(mpi_cmp(r, s) == 0);
+
 		mpi_clear(r);
 		mpi_clear(s);
+	}
+
+	printf("mpi_fdiv_q_2exp, mpi_fdiv_r_2exp, mpi_mul_2exp\n");
+	{
+		mpi_t s, q, r;
+		mpi_init(s);
+		mpi_init(q);
+		mpi_init(r);
+
+		mpi_set_str(s, "1144561273430837494885949696425", 10);
+		mpi_fdiv_q_2exp(q, s, 31);
+		mpi_fdiv_r_2exp(r, s, 31);
+		mpi_mul_2exp(q, q, 31);
+		mpi_add(q, q, r);
+		assert(mpi_cmp(q, s) == 0);
+
+		mpi_clear(s);
+		mpi_clear(q);
+		mpi_clear(r);
 	}
 
 	printf("Collatz problem\n");
