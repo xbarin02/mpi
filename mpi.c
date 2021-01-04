@@ -567,9 +567,21 @@ mp_bitcnt_t mpi_scan1(const mpi_t op, mp_bitcnt_t starting_bit)
 
 void mpi_ui_pow_ui(mpi_t rop, uint32_t base, uint32_t exp)
 {
+	mpi_t b;
+
+	mpi_init(b);
+
+	mpi_set_u32(b, base);
+
 	mpi_set_u32(rop, 1);
 
-	for (uint32_t i = 0; i < exp; ++i) {
-		mpi_mul_u32(rop, rop, base);
+	while (exp != 0) {
+		if (exp & 1) {
+			mpi_mul(rop, rop, b);
+		}
+		mpi_mul(b, b, b);
+		exp >>= 1;
 	}
+
+	mpi_clear(b);
 }
