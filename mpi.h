@@ -52,6 +52,10 @@ void mpi_mul_2exp(mpi_t rop, const mpi_t op1, mp_bitcnt_t op2);
 void mpi_fdiv_q_2exp(mpi_t q, const mpi_t n, mp_bitcnt_t b);
 void mpi_fdiv_r_2exp(mpi_t r, const mpi_t n, mp_bitcnt_t b);
 
+/* Integer Exponentiation */
+
+void mpi_ui_pow_ui(mpi_t rop, uint32_t base, uint32_t exp);
+
 /* Comparison Functions */
 
 int mpi_cmp(const mpi_t op1, const mpi_t op2);
