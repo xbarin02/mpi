@@ -456,7 +456,7 @@ int main()
 		assert(llt(15) == 0);
 		assert(llt(17) == 1);
 		assert(llt(19) == 1);
-		assert(llt(31) == 1); /* BUG */
+		assert(llt(31) == 1);
 	}
 
 	return 0;
