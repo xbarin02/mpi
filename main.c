@@ -490,6 +490,12 @@ int main()
 		mpi_set_str(s, "18446744073709551616", 10);
 		assert(mpi_scan1(s, 0) == 64);
 
+		mpi_set_str(s, "75212820489", 10);
+		assert(mpi_scan1(s, 0) == 0);
+		assert(mpi_scan1(s, 1) == 3);
+		assert(mpi_scan1(s, 4) == 12);
+		assert(mpi_scan1(s, 33) == 36);
+
 		mpi_clear(s);
 	}
 
