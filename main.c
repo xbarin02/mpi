@@ -14,6 +14,16 @@ uint64_t rand_u64()
 	 return (uint64_t)rand() << 48 ^ (uint64_t)rand() << 24 ^ (uint64_t)rand();
 }
 
+mp_bitcnt_t mpi_ctz(const mpi_t n)
+{
+	return mpi_scan1(n, 0);
+}
+
+void mpi_pow3(mpi_t r, uint32_t n)
+{
+	mpi_ui_pow_ui(r, 3, n);
+}
+
 int collatz_max(const char *n_str, const char *max_str)
 {
 	mpi_t n, max, r;
@@ -26,6 +36,7 @@ int collatz_max(const char *n_str, const char *max_str)
 
 	mpi_set(max, n);
 
+#if 0
 	while (0 != mpi_cmp_u32(n, 1)) {
 		if (mpi_odd_p(n)) {
 			mpi_mul_u32(n, n, 3);
@@ -37,6 +48,37 @@ int collatz_max(const char *n_str, const char *max_str)
 			mpi_set(max, n);
 		}
 	}
+#else
+	while (0 != mpi_cmp_u32(n, 1)) {
+		mp_bitcnt_t alpha, beta;
+
+		mpi_add_u32(n, n, 1); /* n++ */
+
+		alpha = mpi_ctz(n);
+
+		mpi_fdiv_q_2exp(n, n, alpha); /* n >>= alpha */
+
+		if (alpha > UINT32_MAX) {
+			alpha = UINT32_MAX;
+		}
+
+		mpi_t a;
+		mpi_init(a);
+		mpi_pow3(a, (uint32_t)alpha); /* n *= lut[alpha] */
+		mpi_mul(n, n, a);
+		mpi_clear(a);
+
+		mpi_sub_u32(n, n, 1);
+
+		if (mpi_cmp(n, max) > 0) {
+			mpi_set(max, n);
+		}
+
+		beta = mpi_ctz(n);
+
+		mpi_fdiv_q_2exp(n, n, beta); /* n >>= ctz(n) */
+	}
+#endif
 
 	mpi_set_str(r, max_str, 10);
 
