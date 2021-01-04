@@ -302,6 +302,11 @@ int main()
 		mpi_set_str(r, "316798385", 10);
 		assert(mpi_cmp(s, r) == 0);
 
+		mpi_set_str(s, "42391158275216203514294433201", 10);
+		mpi_fdiv_r_2exp(s, s, 35);
+		mpi_set_str(r, "28234085809", 10);
+		assert(mpi_cmp(s, r) == 0);
+
 		mpi_clear(s);
 		mpi_clear(r);
 	}
