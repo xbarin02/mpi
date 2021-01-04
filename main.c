@@ -75,6 +75,7 @@ int llt(mp_bitcnt_t p)
 
 		mpi_fdiv_q_2exp(q, s, p);
 		mpi_fdiv_r_2exp(s, s, p);
+		assert(mpi_cmp(s, m) <= 0 );
 		mpi_add(s, s, q);
 
 		mpi_clear(q);
@@ -83,6 +84,8 @@ int llt(mp_bitcnt_t p)
 // 			printf("sub %" PRIu64 "\n", mpi_get_u64(s));
 			mpi_sub(s, s, m);
 		}
+
+		assert(mpi_cmp(s, m) <= 0 );
 	}
 
 	int ret = mpi_cmp_u32(s, 0) == 0;
@@ -196,9 +199,7 @@ int main()
 
 		mpi_set_str(r, "3433683820292512484657849089280", 10);
 		mpi_add_u32(r, r, UINT32_C(2172748161));
-
 		mpi_set_str(s, "3433683820292512484660021837441", 10);
-
 		assert(mpi_cmp(r, s) == 0);
 
 		mpi_clear(r);
@@ -213,9 +214,7 @@ int main()
 
 		mpi_set_str(r, "3433683820292512484657849089280", 10);
 		mpi_add_u64(r, r, UINT64_C(142393223512449));
-
 		mpi_set_str(s, "3433683820292512627051072601729", 10);
-
 		assert(mpi_cmp(r, s) == 0);
 
 		mpi_clear(r);
@@ -232,9 +231,37 @@ int main()
 		mpi_set_str(r, "3433683820292512484657849089280", 10);
 		mpi_set_str(t, "1144561273430837494885949696424", 10);
 		mpi_add(r, r, t);
-
 		mpi_set_str(s, "4578245093723349979543798785704", 10);
+		assert(mpi_cmp(r, s) == 0);
 
+		mpi_set_str(r, "3433683820292512484657849089280", 10);
+		mpi_set_str(t, "42391158275216203514294433201", 10);
+		mpi_add(r, r, t);
+		mpi_set_str(s, "3476074978567728688172143522481", 10);
+		assert(mpi_cmp(r, s) == 0);
+
+		mpi_clear(r);
+		mpi_clear(s);
+		mpi_clear(t);
+	}
+
+	printf("mpi_sub\n");
+	{
+		mpi_t r, s, t;
+		mpi_init(r);
+		mpi_init(s);
+		mpi_init(t);
+
+		mpi_set_str(r, "3433683820292512484657849089280", 10);
+		mpi_set_str(t, "1144561273430837494885949696424", 10);
+		mpi_sub(r, r, t);
+		mpi_set_str(s, "2289122546861674989771899392856", 10);
+		assert(mpi_cmp(r, s) == 0);
+
+		mpi_set_str(r, "423911582752162035142944332014", 10);
+		mpi_set_str(t, "11445612734308374948859496924", 10);
+		mpi_sub(r, r, t);
+		mpi_set_str(s, "412465970017853660194084835090", 10);
 		assert(mpi_cmp(r, s) == 0);
 
 		mpi_clear(r);
@@ -253,6 +280,12 @@ int main()
 		mpi_set_str(s, "1853020188851841", 10);
 		mpi_set_str(r, "22876792454961", 10);
 		mpi_set_str(t, "42391158275216203514294433201", 10);
+		mpi_mul(r, r, s);
+		assert(mpi_cmp(r, t) == 0);
+
+		mpi_set_str(s, "1797010299914431210413179829509605039731475627537851106400", 10);
+		mpi_set_str(r, "42391158275216203514294433201", 10);
+		mpi_set_str(t, "76177348045866392339289727720615561750424801402395196723959174586681921139518743586400", 10);
 		mpi_mul(r, r, s);
 		assert(mpi_cmp(r, t) == 0);
 
@@ -282,6 +315,11 @@ int main()
 		mpi_set_str(r, "1233745083306456319", 10);
 		assert(mpi_cmp(s, r) == 0);
 
+		mpi_set_str(s, "1797010299914431210413179829509605039731475627537851106400", 10);
+		mpi_fdiv_q_2exp(s, s, 31);
+		mpi_set_str(r, "836798129563420643291054214122521243864426215895", 10);
+		assert(mpi_cmp(s, r) == 0);
+
 		mpi_clear(s);
 		mpi_clear(r);
 	}
@@ -305,6 +343,11 @@ int main()
 		mpi_set_str(s, "42391158275216203514294433201", 10);
 		mpi_fdiv_r_2exp(s, s, 35);
 		mpi_set_str(r, "28234085809", 10);
+		assert(mpi_cmp(s, r) == 0);
+
+		mpi_set_str(s, "1797010299914431210413179829509605039731475627537851106400", 10);
+		mpi_fdiv_r_2exp(s, s, 31);
+		mpi_set_str(r, "820921440", 10);
 		assert(mpi_cmp(s, r) == 0);
 
 		mpi_clear(s);
