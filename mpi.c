@@ -340,75 +340,7 @@ void mpi_set(mpi_t rop, const mpi_t op)
 	}
 }
 
-void mpi_mul_karatsuba(mpi_t rop, const mpi_t op1, const mpi_t op2)
-{
-	/* end recursion */
-	if (op1->nmemb < 4 || op2->nmemb < 4) {
-		mpi_mul(rop, op1, op2);
-		return;
-	}
-
-	size_t nmemb = op1->nmemb > op2->nmemb ? op1->nmemb : op2->nmemb;
-
-	size_t m = nmemb / 2;
-
-	mpi_t x0, x1, y0, y1;
-
-	mpi_init(x0);
-	mpi_init(x1);
-	mpi_init(y0);
-	mpi_init(y1);
-
-	/* x = op1 */
-	/* y = op2 */
-	mpi_fdiv_r_2exp(x0, op1, 31 * m);
-	mpi_fdiv_q_2exp(x1, op1, 31 * m);
-	mpi_fdiv_r_2exp(y0, op2, 31 * m);
-	mpi_fdiv_q_2exp(y1, op2, 31 * m);
-
-	mpi_t z0, z1, z2;
-
-	mpi_init(z0);
-	mpi_init(z1);
-	mpi_init(z2);
-
-	mpi_mul(z2, x1, y1);
-	mpi_mul(z0, x0, y0);
-
-	mpi_t w0, w1;
-
-	mpi_init(w0);
-	mpi_init(w1);
-
-	mpi_add(w0, x0, x1);
-	mpi_add(w1, y0, y1);
-
-	mpi_mul(z1, w0, w1);
-	mpi_sub(z1, z1, z2);
-	mpi_sub(z1, z1, z0);
-
-	mpi_mul_2exp(z2, z2, 31 * 2 * m);
-	mpi_mul_2exp(z1, z1, 31 * m);
-
-	mpi_add(rop, z0, z1);
-	mpi_add(rop, rop, z2);
-
-	mpi_clear(w0);
-	mpi_clear(w1);
-
-	mpi_clear(z0);
-	mpi_clear(z1);
-	mpi_clear(z2);
-
-	mpi_clear(x0);
-	mpi_clear(x1);
-	mpi_clear(y0);
-	mpi_clear(y1);
-
-	mpi_compact(rop);
-}
-
-void mpi_mul(mpi_t rop, const mpi_t op1, const mpi_t op2)
+void mpi_mul_naive(mpi_t rop, const mpi_t op1, const mpi_t op2)
 {
 	size_t nmemb = op1->nmemb + op2->nmemb;
 
@@ -443,6 +375,79 @@ void mpi_mul(mpi_t rop, const mpi_t op1, const mpi_t op2)
 	mpi_compact(rop);
 
 	mpi_clear(tmp);
+}
+
+void mpi_mul_karatsuba(mpi_t rop, const mpi_t op1, const mpi_t op2)
+{
+	/* end recursion */
+	if (op1->nmemb < 4 || op2->nmemb < 4) {
+		mpi_mul_naive(rop, op1, op2);
+		return;
+	}
+
+	size_t nmemb = op1->nmemb > op2->nmemb ? op1->nmemb : op2->nmemb;
+
+	size_t m = nmemb / 2;
+
+	mpi_t x0, x1, y0, y1;
+
+	mpi_init(x0);
+	mpi_init(x1);
+	mpi_init(y0);
+	mpi_init(y1);
+
+	/* x = op1 */
+	/* y = op2 */
+	mpi_fdiv_r_2exp(x0, op1, 31 * m);
+	mpi_fdiv_q_2exp(x1, op1, 31 * m);
+	mpi_fdiv_r_2exp(y0, op2, 31 * m);
+	mpi_fdiv_q_2exp(y1, op2, 31 * m);
+
+	mpi_t z0, z1, z2;
+
+	mpi_init(z0);
+	mpi_init(z1);
+	mpi_init(z2);
+
+	mpi_mul_karatsuba(z2, x1, y1);
+	mpi_mul_karatsuba(z0, x0, y0);
+
+	mpi_t w0, w1;
+
+	mpi_init(w0);
+	mpi_init(w1);
+
+	mpi_add(w0, x0, x1);
+	mpi_add(w1, y0, y1);
+
+	mpi_mul_karatsuba(z1, w0, w1);
+	mpi_sub(z1, z1, z2);
+	mpi_sub(z1, z1, z0);
+
+	mpi_mul_2exp(z2, z2, 31 * 2 * m);
+	mpi_mul_2exp(z1, z1, 31 * m);
+
+	mpi_add(rop, z0, z1);
+	mpi_add(rop, rop, z2);
+
+	mpi_clear(w0);
+	mpi_clear(w1);
+
+	mpi_clear(z0);
+	mpi_clear(z1);
+	mpi_clear(z2);
+
+	mpi_clear(x0);
+	mpi_clear(x1);
+	mpi_clear(y0);
+	mpi_clear(y1);
+
+	mpi_compact(rop);
+}
+
+void mpi_mul(mpi_t rop, const mpi_t op1, const mpi_t op2)
+{
+	mpi_mul_naive(rop, op1, op2);
 }
 
 int mpi_cmp(const mpi_t op1, const mpi_t op2)
