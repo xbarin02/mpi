@@ -526,6 +526,10 @@ int main()
 		mpi_set_str(r, "10000000000", 10);
 		assert(mpi_cmp(s, r) == 0);
 
+		mpi_ui_pow_ui(s, 51, 51);
+		mpi_set_str(r, "1219211305094648479473193481872927834667576992593770717189298225284399541977208231315051", 10);
+		assert(mpi_cmp(s, r) == 0);
+
 		mpi_clear(s);
 		mpi_clear(r);
 	}
