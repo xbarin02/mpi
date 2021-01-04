@@ -64,7 +64,7 @@ int llt(mp_bitcnt_t p)
 	mpi_set_u32(s, 4);
 
 	for (size_t i = 0; i < p - 2; ++i) {
-// 		printf("%zu/%zu:\n", i, p - 2);
+// 		printf("LLT(%zu): %zu/%zu:\n", p, i, p - 2);
 		mpi_mul(s, s, s); /* s = s^2 */
 		mpi_add(s, s, m); /* s = s + m */
 		mpi_sub_u32(s, s, 2); /* s = s - 2 */
@@ -245,6 +245,26 @@ int main()
 		mpi_clear(t);
 	}
 
+	printf("mpi_sub_u32\n");
+	{
+		mpi_t r, s;
+		mpi_init(r);
+		mpi_init(s);
+
+		mpi_set_str(r, "3433683820292512484657849089280", 10);
+		mpi_sub_u32(r, r, 2);
+		mpi_set_str(s, "3433683820292512484657849089278", 10);
+		assert(mpi_cmp(r, s) == 0);
+
+		mpi_set_str(r, "18446744073709551616", 10);
+		mpi_sub_u32(r, r, 2);
+		mpi_set_str(s, "18446744073709551614", 10);
+		assert(mpi_cmp(r, s) == 0);
+
+		mpi_clear(r);
+		mpi_clear(s);
+	}
+
 	printf("mpi_sub\n");
 	{
 		mpi_t r, s, t;
@@ -318,6 +338,16 @@ int main()
 		mpi_set_str(s, "1797010299914431210413179829509605039731475627537851106400", 10);
 		mpi_fdiv_q_2exp(s, s, 31);
 		mpi_set_str(r, "836798129563420643291054214122521243864426215895", 10);
+		assert(mpi_cmp(s, r) == 0);
+
+		mpi_set_str(s, "4611686018427387903", 10);
+		mpi_fdiv_q_2exp(s, s, 31);
+		mpi_set_str(r, "2147483647", 10);
+		assert(mpi_cmp(s, r) == 0);
+
+		mpi_set_str(s, "9223372036854775807", 10);
+		mpi_fdiv_q_2exp(s, s, 31);
+		mpi_set_str(r, "4294967295", 10);
 		assert(mpi_cmp(s, r) == 0);
 
 		mpi_clear(s);
