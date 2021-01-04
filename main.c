@@ -64,7 +64,6 @@ int llt(mp_bitcnt_t p)
 	mpi_set_u32(s, 4);
 
 	for (size_t i = 0; i < p - 2; ++i) {
-// 		printf("LLT(%zu): %zu/%zu:\n", p, i, p - 2);
 		mpi_mul(s, s, s); /* s = s^2 */
 		mpi_add(s, s, m); /* s = s + m */
 		mpi_sub_u32(s, s, 2); /* s = s - 2 */
@@ -81,7 +80,6 @@ int llt(mp_bitcnt_t p)
 		mpi_clear(q);
 
 		while (mpi_cmp(s, m) >= 0) {
-// 			printf("sub %" PRIu64 "\n", mpi_get_u64(s));
 			mpi_sub(s, s, m);
 		}
 

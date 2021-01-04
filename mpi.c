@@ -513,7 +513,7 @@ void mpi_fdiv_r_2exp(mpi_t r, const mpi_t n, mp_bitcnt_t b)
 void mpi_mul_2exp(mpi_t rop, const mpi_t op1, mp_bitcnt_t op2)
 {
 	size_t words = ceil_div(op2, 31); /* shift left by whole words/libs */
-	size_t bits = (31 - op2 % 31) /*% 31*/; /* and shift right by bits */
+	size_t bits = (31 - op2 % 31); /* and shift right by bits */
 
 	size_t nmemb = op1->nmemb + words;
 
