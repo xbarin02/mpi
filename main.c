@@ -436,6 +436,21 @@ int main()
 		mpi_clear(r);
 	}
 
+	printf("mpi_scan1\n");
+	{
+		mpi_t s;
+		mpi_init(s);
+
+		mpi_set_str(s, "173056", 10);
+		assert(mpi_scan1(s, 0) == 10);
+		assert(mpi_scan1(s, 11) == 13);
+
+		mpi_set_str(s, "18446744073709551616", 10);
+		assert(mpi_scan1(s, 0) == 64);
+
+		mpi_clear(s);
+	}
+
 	printf("Collatz problem\n");
 	{
 		assert(collatz_max("35136221158664800255", "92102545196486820634779928066830214436"));

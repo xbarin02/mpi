@@ -537,3 +537,30 @@ void mpi_mul_2exp(mpi_t rop, const mpi_t op1, mp_bitcnt_t op2)
 
 	mpi_clear(tmp);
 }
+
+int mpi_get_bit(const mpi_t op, mp_bitcnt_t b)
+{
+	size_t word = b / 31;
+	size_t bit = b % 31;
+
+	int r = 0;
+
+	if (word < op->nmemb) {
+		r = (op->data[word] >> bit) & 1;
+	}
+
+	return r;
+}
+
+mp_bitcnt_t mpi_scan1(const mpi_t op, mp_bitcnt_t starting_bit)
+{
+	size_t bits = 31 * op->nmemb;
+
+	for (size_t i = starting_bit; i < bits; ++i) {
+		if (mpi_get_bit(op, i) == 1) {
+			return i;
+		}
+	}
+
+	return (mp_bitcnt_t)-1;
+}
