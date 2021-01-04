@@ -496,6 +496,11 @@ int main()
 		assert(mpi_scan1(s, 4) == 12);
 		assert(mpi_scan1(s, 33) == 36);
 
+		mpi_set_str(s, "72057594037927936", 10);
+		assert(mpi_scan1(s, 0) == 56);
+		assert(mpi_scan1(s, 10) == 56);
+		assert(mpi_scan1(s, 56) == 56);
+
 		mpi_clear(s);
 	}
 
@@ -515,6 +520,10 @@ int main()
 
 		mpi_ui_pow_ui(s, 7, 31);
 		mpi_set_str(r, "157775382034845806615042743", 10);
+		assert(mpi_cmp(s, r) == 0);
+
+		mpi_ui_pow_ui(s, 10, 10);
+		mpi_set_str(r, "10000000000", 10);
 		assert(mpi_cmp(s, r) == 0);
 
 		mpi_clear(s);
