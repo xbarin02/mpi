@@ -509,6 +509,14 @@ int main()
 		mpi_set_str(r, "1144561273430837494885949696427", 10);
 		assert(mpi_cmp(s, r) == 0);
 
+		mpi_ui_pow_ui(s, 5, 22);
+		mpi_set_str(r, "2384185791015625", 10);
+		assert(mpi_cmp(s, r) == 0);
+
+		mpi_ui_pow_ui(s, 7, 31);
+		mpi_set_str(r, "157775382034845806615042743", 10);
+		assert(mpi_cmp(s, r) == 0);
+
 		mpi_clear(s);
 		mpi_clear(r);
 	}
