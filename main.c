@@ -556,6 +556,8 @@ int main()
 		assert(llt(89) == 1);
 		assert(llt(107) == 1);
 		assert(llt(127) == 1);
+		assert(llt(521) == 1);
+		assert(llt(607) == 1);
 	}
 
 	return 0;
