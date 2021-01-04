@@ -464,7 +464,7 @@ uint64_t mpi_get_word(const mpi_t op, size_t n)
 
 void mpi_fdiv_q_2exp(mpi_t q, const mpi_t n, mp_bitcnt_t b)
 {
-	size_t words = b / 31; /* shift by whole words/libs */
+	size_t words = b / 31; /* shift by whole words/limbs */
 	size_t bits = b % 31; /* and shift by bits */
 
 	size_t nmemb = n->nmemb - words;
@@ -488,7 +488,7 @@ void mpi_fdiv_q_2exp(mpi_t q, const mpi_t n, mp_bitcnt_t b)
 
 void mpi_fdiv_r_2exp(mpi_t r, const mpi_t n, mp_bitcnt_t b)
 {
-	size_t words = b / 31; /* shift by whole words/libs */
+	size_t words = b / 31; /* shift by whole words/limbs */
 	size_t bits = b % 31; /* and shift by bits */
 
 	size_t nmemb = words + 1;

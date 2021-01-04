@@ -309,6 +309,11 @@ int main()
 		mpi_mul(r, r, s);
 		assert(mpi_cmp(r, t) == 0);
 
+		mpi_set_str(s, "2147483648", 10);
+		mpi_mul(s, s, s);
+		mpi_set_str(t, "4611686018427387904", 10);
+		assert(mpi_cmp(s, t) == 0);
+
 		mpi_clear(s);
 		mpi_clear(r);
 		mpi_clear(t);
