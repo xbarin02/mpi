@@ -457,6 +457,10 @@ int main()
 		assert(llt(17) == 1);
 		assert(llt(19) == 1);
 		assert(llt(31) == 1);
+		assert(llt(61) == 1);
+		assert(llt(89) == 1);
+		assert(llt(107) == 1);
+		assert(llt(127) == 1);
 	}
 
 	return 0;
