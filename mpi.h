@@ -52,13 +52,13 @@ void mpi_mul_2exp(mpi_t rop, const mpi_t op1, mp_bitcnt_t op2);
 void mpi_fdiv_q_2exp(mpi_t q, const mpi_t n, mp_bitcnt_t b);
 void mpi_fdiv_r_2exp(mpi_t r, const mpi_t n, mp_bitcnt_t b);
 
-uint32_t mpz_fdiv_ui(const mpi_t n, uint32_t d);
+uint32_t mpz_fdiv_u32(const mpi_t n, uint32_t d);
 
 int mpi_divisible_u32_p(const mpi_t n, unsigned long int d);
 
 /* Integer Exponentiation */
 
-void mpi_ui_pow_ui(mpi_t rop, uint32_t base, uint32_t exp);
+void mpi_ui_pow_u32(mpi_t rop, uint32_t base, uint32_t exp);
 
 /* Comparison Functions */
 

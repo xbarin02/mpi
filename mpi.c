@@ -673,7 +673,7 @@ mp_bitcnt_t mpi_scan1(const mpi_t op, mp_bitcnt_t starting_bit)
 	return (mp_bitcnt_t)-1;
 }
 
-void mpi_ui_pow_ui(mpi_t rop, uint32_t base, uint32_t exp)
+void mpi_ui_pow_u32(mpi_t rop, uint32_t base, uint32_t exp)
 {
 	mpi_t b;
 
@@ -694,7 +694,7 @@ void mpi_ui_pow_ui(mpi_t rop, uint32_t base, uint32_t exp)
 	mpi_clear(b);
 }
 
-uint32_t mpz_fdiv_ui(const mpi_t n, uint32_t d)
+uint32_t mpz_fdiv_u32(const mpi_t n, uint32_t d)
 {
 	uint32_t r = 0;
 
@@ -716,5 +716,5 @@ uint32_t mpz_fdiv_ui(const mpi_t n, uint32_t d)
 
 int mpi_divisible_u32_p(const mpi_t n, unsigned long int d)
 {
-	return mpz_fdiv_ui(n, d) == 0;
+	return mpz_fdiv_u32(n, d) == 0;
 }

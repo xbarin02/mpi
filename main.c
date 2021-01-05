@@ -21,7 +21,7 @@ mp_bitcnt_t mpi_ctz(const mpi_t n)
 
 void mpi_pow3(mpi_t r, uint32_t n)
 {
-	mpi_ui_pow_ui(r, 3, n);
+	mpi_ui_pow_u32(r, 3, n);
 }
 
 int collatz_max(const char *n_str, const char *max_str)
@@ -529,29 +529,29 @@ int main()
 		mpi_clear(s);
 	}
 
-	printf("mpi_ui_pow_ui\n");
+	printf("mpi_ui_pow_u32\n");
 	{
 		mpi_t s, r;
 		mpi_init(s);
 		mpi_init(r);
 
-		mpi_ui_pow_ui(s, 3, 63);
+		mpi_ui_pow_u32(s, 3, 63);
 		mpi_set_str(r, "1144561273430837494885949696427", 10);
 		assert(mpi_cmp(s, r) == 0);
 
-		mpi_ui_pow_ui(s, 5, 22);
+		mpi_ui_pow_u32(s, 5, 22);
 		mpi_set_str(r, "2384185791015625", 10);
 		assert(mpi_cmp(s, r) == 0);
 
-		mpi_ui_pow_ui(s, 7, 31);
+		mpi_ui_pow_u32(s, 7, 31);
 		mpi_set_str(r, "157775382034845806615042743", 10);
 		assert(mpi_cmp(s, r) == 0);
 
-		mpi_ui_pow_ui(s, 10, 10);
+		mpi_ui_pow_u32(s, 10, 10);
 		mpi_set_str(r, "10000000000", 10);
 		assert(mpi_cmp(s, r) == 0);
 
-		mpi_ui_pow_ui(s, 51, 51);
+		mpi_ui_pow_u32(s, 51, 51);
 		mpi_set_str(r, "1219211305094648479473193481872927834667576992593770717189298225284399541977208231315051", 10);
 		assert(mpi_cmp(s, r) == 0);
 
@@ -573,15 +573,15 @@ int main()
 		mpi_clear(s);
 	}
 
-	printf("mpz_fdiv_ui\n");
+	printf("mpz_fdiv_u32\n");
 	{
 		mpi_t s;
 		mpi_init(s);
 
 		mpi_set_str(s, "123456789", 10);
-		assert(mpz_fdiv_ui(s, 97) == 39);
-		assert(mpz_fdiv_ui(s, 23) == 11);
-		assert(mpz_fdiv_ui(s, 1000) == 789);
+		assert(mpz_fdiv_u32(s, 97) == 39);
+		assert(mpz_fdiv_u32(s, 23) == 11);
+		assert(mpz_fdiv_u32(s, 1000) == 789);
 
 		mpi_clear(s);
 	}
