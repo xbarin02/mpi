@@ -384,7 +384,7 @@ void mpi_mul_naive(mpi_t rop, const mpi_t op1, const mpi_t op2)
 void mpi_mul_karatsuba(mpi_t rop, const mpi_t op1, const mpi_t op2)
 {
 	/* end recursion */
-	if (op1->nmemb < 64 || op2->nmemb < 64) {
+	if (op1->nmemb < 32 || op2->nmemb < 32) {
 		mpi_mul_naive(rop, op1, op2);
 		return;
 	}
