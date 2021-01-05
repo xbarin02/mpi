@@ -559,6 +559,17 @@ int main()
 		mpi_clear(r);
 	}
 
+	printf("mpi_divisible_u32_p\n");
+	{
+		mpi_t s;
+		mpi_init(s);
+
+		mpi_set_str(s, "2432902008176640000", 10);
+		assert(mpi_divisible_u32_p(s, 20) == 1);
+
+		mpi_clear(s);
+	}
+
 	printf("Collatz problem\n");
 	{
 		assert(collatz_max("212581558780141311", "2176718166004315761101410771585688"));

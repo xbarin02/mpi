@@ -693,3 +693,28 @@ void mpi_ui_pow_ui(mpi_t rop, uint32_t base, uint32_t exp)
 
 	mpi_clear(b);
 }
+
+uint32_t mpz_fdiv_ui(const mpi_t n, uint32_t d)
+{
+	uint32_t r = 0;
+
+	for (size_t i = n->nmemb - 1; i != (size_t)-1; --i) {
+		for (int b = 30; b >= 0; --b) {
+			int bit = (n->data[i] >> b) & 1;
+
+			r *= 2;
+			r += bit;
+
+			if (r >= d) {
+				r -= d;
+			}
+		}
+	}
+
+	return r;
+}
+
+int mpi_divisible_u32_p(const mpi_t n, unsigned long int d)
+{
+	return mpz_fdiv_ui(n, d) == 0;
+}
