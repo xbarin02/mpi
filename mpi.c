@@ -581,11 +581,17 @@ void mpi_fdiv_r_2exp(mpi_t r, const mpi_t n, mp_bitcnt_t b)
 
 	mpi_enlarge(tmp, nmemb);
 
-	for (size_t i = 0; i < words; ++i) {
-		tmp->data[i] = i < n->nmemb ? n->data[i] : 0;
-	}
+	if (bits == 0) {
+		size_t min = words < n->nmemb ? words : n->nmemb;
+		memcpy(tmp->data, n->data, sizeof(uint32_t) * min);
+		memset(tmp->data + min, 0, sizeof(uint32_t) * (tmp->nmemb - min));
+	} else {
+		for (size_t i = 0; i < words; ++i) {
+			tmp->data[i] = i < n->nmemb ? n->data[i] : 0;
+		}
 
-	tmp->data[words] = words < n->nmemb ? n->data[words] & ((UINT32_C(1) << bits) - 1) : 0;
+		tmp->data[words] = words < n->nmemb ? n->data[words] & ((UINT32_C(1) << bits) - 1) : 0;
+	}
 
 	mpi_set(r, tmp);
 
