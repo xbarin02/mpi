@@ -601,7 +601,7 @@ uint32_t mpi_get_word_u32(const mpi_t op, size_t n, size_t lshift)
 	assert(lshift < 31);
 
 	if (n < op->nmemb + 0) {
-		r |= op->data[n + 0] << lshift;
+		r |= (op->data[n + 0] << lshift) & 0x7fffffff;
 	}
 
 	if (n < op->nmemb + 1 && n > 0) {
@@ -613,7 +613,7 @@ uint32_t mpi_get_word_u32(const mpi_t op, size_t n, size_t lshift)
 
 void mpi_mul_2exp(mpi_t rop, const mpi_t op1, mp_bitcnt_t op2)
 {
-#if 1
+#if 0
 	size_t words = ceil_div(op2, 31); /* shift left by whole words/limbs */
 	size_t bits = (31 - op2 % 31); /* and shift right by bits */
 
@@ -639,10 +639,11 @@ void mpi_mul_2exp(mpi_t rop, const mpi_t op1, mp_bitcnt_t op2)
 
 	mpi_clear(tmp);
 #else
+	size_t words = ceil_div(op2, 31);
 	size_t word_shift = op2 / 31;
 	size_t bit_shift = op2 % 31;
 
-	size_t nmemb = op1->nmemb + word_shift;
+	size_t nmemb = op1->nmemb + words;
 
 	mpi_t tmp;
 
@@ -657,6 +658,8 @@ void mpi_mul_2exp(mpi_t rop, const mpi_t op1, mp_bitcnt_t op2)
 	mpi_set(rop, tmp);
 
 	mpi_clear(tmp);
+
+	mpi_compact(rop);
 #endif
 }
 
