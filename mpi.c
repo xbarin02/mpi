@@ -557,10 +557,14 @@ void mpi_fdiv_q_2exp(mpi_t q, const mpi_t n, mp_bitcnt_t b)
 
 	mpi_enlarge(tmp, nmemb);
 
-	for (size_t i = 0; i < tmp->nmemb; ++i) {
-		uint32_t r = (uint32_t)((mpi_get_word_u64(n, i + words) >> bits) & 0x7fffffff);
+	if (bits == 0) {
+		memcpy(tmp->data, n->data + words, nmemb * sizeof(uint32_t));
+	} else {
+		for (size_t i = 0; i < tmp->nmemb; ++i) {
+			uint32_t r = (uint32_t)((mpi_get_word_u64(n, i + words) >> bits) & 0x7fffffff);
 
-		tmp->data[i] = r;
+			tmp->data[i] = r;
+		}
 	}
 
 	mpi_set(q, tmp);
