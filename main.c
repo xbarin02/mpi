@@ -565,7 +565,10 @@ int main()
 		mpi_init(s);
 
 		mpi_set_str(s, "2432902008176640000", 10);
+		assert(mpi_divisible_u32_p(s, 19) == 1);
 		assert(mpi_divisible_u32_p(s, 20) == 1);
+		assert(mpi_divisible_u32_p(s, 23) == 0);
+		assert(mpi_divisible_u32_p(s, 31) == 0);
 
 		mpi_clear(s);
 	}
