@@ -594,7 +594,7 @@ void mpi_fdiv_r_2exp(mpi_t r, const mpi_t n, mp_bitcnt_t b)
 	mpi_compact(r);
 }
 
-uint32_t mpi_get_word_u32(const mpi_t op, size_t n, size_t lshift)
+uint32_t mpi_get_word_lshift_u32(const mpi_t op, size_t n, size_t lshift)
 {
 	uint32_t r = 0;
 
@@ -613,32 +613,6 @@ uint32_t mpi_get_word_u32(const mpi_t op, size_t n, size_t lshift)
 
 void mpi_mul_2exp(mpi_t rop, const mpi_t op1, mp_bitcnt_t op2)
 {
-#if 0
-	size_t words = ceil_div(op2, 31); /* shift left by whole words/limbs */
-	size_t bits = (31 - op2 % 31); /* and shift right by bits */
-
-	size_t nmemb = op1->nmemb + words;
-
-	mpi_t tmp;
-
-	mpi_init(tmp);
-
-	mpi_enlarge(tmp, nmemb);
-
-	for (size_t i = 0; i < words; ++i) {
-		tmp->data[i] = 0;
-	}
-
-	for (size_t i = words; i < tmp->nmemb; ++i) {
-		tmp->data[i] = op1->data[i - words];
-	}
-
-	mpi_fdiv_q_2exp(tmp, tmp, bits);
-
-	mpi_set(rop, tmp);
-
-	mpi_clear(tmp);
-#else
 	size_t words = ceil_div(op2, 31);
 	size_t word_shift = op2 / 31;
 	size_t bit_shift = op2 % 31;
@@ -652,7 +626,7 @@ void mpi_mul_2exp(mpi_t rop, const mpi_t op1, mp_bitcnt_t op2)
 	mpi_enlarge(tmp, nmemb);
 
 	for (size_t i = 0; i < tmp->nmemb; ++i) {
-		tmp->data[i] = i >= word_shift ? mpi_get_word_u32(op1, i - word_shift, bit_shift) : 0;
+		tmp->data[i] = i >= word_shift ? mpi_get_word_lshift_u32(op1, i - word_shift, bit_shift) : 0;
 	}
 
 	mpi_set(rop, tmp);
@@ -660,7 +634,6 @@ void mpi_mul_2exp(mpi_t rop, const mpi_t op1, mp_bitcnt_t op2)
 	mpi_clear(tmp);
 
 	mpi_compact(rop);
-#endif
 }
 
 int mpi_get_bit(const mpi_t op, mp_bitcnt_t b)
