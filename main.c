@@ -573,6 +573,19 @@ int main()
 		mpi_clear(s);
 	}
 
+	printf("mpz_fdiv_ui\n");
+	{
+		mpi_t s;
+		mpi_init(s);
+
+		mpi_set_str(s, "123456789", 10);
+		assert(mpz_fdiv_ui(s, 97) == 39);
+		assert(mpz_fdiv_ui(s, 23) == 11);
+		assert(mpz_fdiv_ui(s, 1000) == 789);
+
+		mpi_clear(s);
+	}
+
 	printf("Collatz problem\n");
 	{
 		assert(collatz_max("212581558780141311", "2176718166004315761101410771585688"));
