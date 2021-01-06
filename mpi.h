@@ -79,6 +79,7 @@ void mpi_setbit(mpi_t rop, mp_bitcnt_t bit_index);
 /* I/O of Integers */
 
 size_t mpi_out_str(FILE *stream, int base, const mpi_t op);
+int gmp_fprintf(FILE *fp, const char *fmt, ...);
 
 /* Miscellaneous Functions */
 

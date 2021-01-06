@@ -677,9 +677,24 @@ int main()
 		mpi_set_str(n, "1234567890", 10);
 		mpi_out_str(stdout, 10, n);
 		printf("\n");
+
 		mpi_set_str(n, "0", 10);
 		mpi_out_str(stdout, 10, n);
 		printf("\n");
+
+		mpi_clear(n);
+	}
+
+	printf("gmp_fprintf\n");
+	{
+		mpi_t n;
+		mpi_init(n);
+
+		mpi_set_str(n, "1234567890", 10);
+		gmp_fprintf(stdout, "n = %Zi\n", n);
+
+		mpi_set_str(n, "0", 10);
+		gmp_fprintf(stdout, "n = %Zi\n", n);
 
 		mpi_clear(n);
 	}

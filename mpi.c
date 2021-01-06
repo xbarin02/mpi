@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdarg.h>
 
 void mpi_init(mpi_t rop)
 {
@@ -879,6 +880,75 @@ size_t mpi_out_str(FILE *stream, int base, const mpi_t op)
 
 	mpi_clear(n);
 	mpi_clear(r);
+
+	return ret;
+}
+
+int gmp_fprintf(FILE *fp, const char *fmt, ...)
+{
+	va_list arg;
+	va_start(arg, fmt);
+
+	int ret = 0;
+
+	const char *ptr = fmt;
+
+	int state = 0;
+	int mod = 0;
+	while (1) {
+		switch (*ptr) {
+			case '\0':
+				goto exit;
+			case '%':
+				switch (state) {
+					case 0:
+						state = 1;
+						break;
+					case 1:
+						ret += fprintf(fp, "%%");
+						state = 0;
+						break;
+					default:
+						abort();
+				}
+				break;
+			case 'Z':
+				switch (state) {
+					case 1:
+						mod = 'Z';
+						break;
+					case 0:
+						ret += fprintf(fp, "Z");
+						break;
+					default:
+						abort();
+				}
+				break;
+			case 'i':
+				switch (state) {
+					mpi_t n;
+					case 1:
+						assert(mod == 'Z');
+						*n = *va_arg(arg, struct mpi *);
+						ret += mpi_out_str(fp, 10, n);
+						state = 0;
+						break;
+					case 0:
+						ret += fprintf(fp, "i");
+						break;
+					default:
+						abort();
+				}
+				break;
+			default:
+				assert(state == 0);
+				ret += fprintf(fp, "%c", *ptr);
+				break;
+		}
+		ptr++;
+	}
+exit:
+	va_end(arg);
 
 	return ret;
 }
