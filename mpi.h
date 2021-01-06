@@ -70,6 +70,7 @@ int mpi_cmp_u32(const mpi_t op1, uint32_t op2);
 mp_bitcnt_t mpi_scan1(const mpi_t op, mp_bitcnt_t starting_bit);
 
 int mpi_tstbit(const mpi_t op, mp_bitcnt_t bit_index);
+void mpi_setbit(mpi_t rop, mp_bitcnt_t bit_index);
 
 /* Miscellaneous Functions */
 

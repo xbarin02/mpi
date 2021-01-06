@@ -602,6 +602,23 @@ int main()
 		mpi_clear(s);
 	}
 
+	printf("mpi_setbit\n");
+	{
+		mpi_t s;
+		mpi_init(s);
+
+		mpi_set_str(s, "0", 10);
+
+		mpi_setbit(s, 1);
+		assert(mpi_cmp_u32(s, 2) == 0);
+		mpi_setbit(s, 0);
+		assert(mpi_cmp_u32(s, 3) == 0);
+		mpi_setbit(s, 31);
+		assert(mpi_cmp_u32(s, UINT32_C(2147483651)) == 0);
+
+		mpi_clear(s);
+	}
+
 	printf("Collatz problem\n");
 	{
 		assert(collatz_max("212581558780141311", "2176718166004315761101410771585688"));

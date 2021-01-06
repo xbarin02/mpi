@@ -728,3 +728,15 @@ int mpi_tstbit(const mpi_t op, mp_bitcnt_t bit_index)
 
 	return (r >> bit) & 1;
 }
+
+void mpi_setbit(mpi_t rop, mp_bitcnt_t bit_index)
+{
+	size_t word = bit_index / 31;
+	size_t bit = bit_index % 31;
+
+	mpi_enlarge(rop, word + 1);
+
+	uint32_t mask = (uint32_t)1 << bit;
+
+	rop->data[word] |= mask;
+}
