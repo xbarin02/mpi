@@ -740,3 +740,47 @@ void mpi_setbit(mpi_t rop, mp_bitcnt_t bit_index)
 
 	rop->data[word] |= mask;
 }
+
+size_t mpi_sizeinbase(const mpi_t op, int base)
+{
+	assert(base == 2);
+
+	// find right-most non-zero word
+	for (size_t i = op->nmemb - 1; i != (size_t)-1; --i) {
+		if (op->data[i] != 0) {
+			// find right-most non-zero bit
+			for (int b = 30; b >= 0; --b) {
+				if ((op->data[i] & ((uint32_t)1 << b)) != 0) {
+					return 31 * i + b + 1;
+				}
+			}
+		}
+	}
+
+	return 0;
+}
+
+void mpi_fdiv_qr(mpi_t q, mpi_t r, const mpi_t n, const mpi_t d)
+{
+	if (mpi_cmp_u32(d, 0) == 0) {
+		mpi_set_u32(q, 0);
+		mpi_set(r, n);
+		return;
+	}
+
+	mpi_set_u32(q, 0);
+	mpi_set_u32(r, 0);
+
+	size_t start = mpi_sizeinbase(n, 2) - 1;
+
+	for (size_t i = start; i != (size_t)-1; --i) {
+		mpi_mul_2exp(r, r, 1);
+		if (mpi_tstbit(n, i) != 0) {
+			mpi_setbit(r, 0);
+		}
+		if (mpi_cmp(r, d) >= 0) {
+			mpi_sub(r, r, d);
+			mpi_setbit(q, i);
+		}
+	}
+}

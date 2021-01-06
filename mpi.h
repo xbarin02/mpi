@@ -77,4 +77,6 @@ void mpi_setbit(mpi_t rop, mp_bitcnt_t bit_index);
 int mpi_odd_p(const mpi_t op);
 int mpi_even_p(const mpi_t op);
 
+size_t mpi_sizeinbase(const mpi_t op, int base);
+
 #endif
