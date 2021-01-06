@@ -109,8 +109,6 @@ uint64_t mpi_get_u64(const mpi_t op)
 
 	uint64_t r = 0;
 
-	assert(nmemb > 0);
-
 	for (size_t n = nmemb - 1; n != (size_t)-1; --n) {
 		r <<= 31;
 		r |= op->data[n];
@@ -128,8 +126,6 @@ uint32_t mpi_get_u32(const mpi_t op)
 	}
 
 	uint32_t r = 0;
-
-	assert(nmemb > 0);
 
 	for (size_t n = nmemb - 1; n != (size_t)-1; --n) {
 		r <<= 31;
@@ -182,6 +178,7 @@ void mpi_sub(mpi_t rop, const mpi_t op1, const mpi_t op2)
 	}
 
 	if (c != 0) {
+		fprintf(stderr, "Negative numbers not supported\n");
 		abort();
 	}
 
@@ -231,6 +228,7 @@ void mpi_sub_u64(mpi_t rop, const mpi_t op1, uint64_t op2)
 	}
 
 	if (c != 0) {
+		fprintf(stderr, "Negative numbers not supported\n");
 		abort();
 	}
 }
@@ -278,6 +276,7 @@ void mpi_sub_u32(mpi_t rop, const mpi_t op1, uint32_t op2)
 	}
 
 	if (c != 0) {
+		fprintf(stderr, "Negative numbers not supported\n");
 		abort();
 	}
 }
@@ -482,8 +481,8 @@ int mpi_cmp_u32(const mpi_t op1, uint32_t op2)
 {
 	size_t nmemb = op1->nmemb;
 
-	if (nmemb == 0) {
-		return 0;
+	if (nmemb < ceil_div(32, 31)) {
+		nmemb = ceil_div(32, 31);
 	}
 
 	for (size_t n = nmemb - 1; n != (size_t)-1; --n) {
@@ -764,9 +763,7 @@ void mpi_fdiv_qr(mpi_t q, mpi_t r, const mpi_t n, const mpi_t d)
 {
 	if (mpi_cmp_u32(d, 0) == 0) {
 		fprintf(stderr, "Division by zero\n");
-		mpi_set_u32(q, 0);
-		mpi_set(r, n);
-		return;
+		abort();
 	}
 
 	mpi_set_u32(q, 0);
@@ -784,4 +781,31 @@ void mpi_fdiv_qr(mpi_t q, mpi_t r, const mpi_t n, const mpi_t d)
 			mpi_setbit(q, i);
 		}
 	}
+}
+
+uint32_t mpi_fdiv_qr_u32(mpi_t q, mpi_t r, const mpi_t n, uint32_t d)
+{
+	if (d == 0) {
+		fprintf(stderr, "Division by zero\n");
+		abort();
+	}
+
+	mpi_set_u32(q, 0);
+	mpi_set_u32(r, 0);
+
+	size_t start = mpi_sizeinbase(n, 2) - 1;
+
+	for (size_t i = start+29; i != (size_t)-1; --i) {
+		mpi_mul_2exp(r, r, 1);
+		if (mpi_tstbit(n, i) != 0) {
+			mpi_setbit(r, 0);
+		}
+		if (mpi_cmp_u32(r, d) >= 0) {
+			mpi_sub_u32(r, r, d);
+
+			mpi_setbit(q, i);
+		}
+	}
+
+	return mpi_get_u32(r);
 }

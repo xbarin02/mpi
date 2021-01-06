@@ -50,6 +50,7 @@ void mpi_mul_2exp(mpi_t rop, const mpi_t op1, mp_bitcnt_t op2);
 /* Division Functions */
 
 void mpi_fdiv_qr(mpi_t q, mpi_t r, const mpi_t n, const mpi_t d);
+uint32_t mpi_fdiv_qr_u32(mpi_t q, mpi_t r, const mpi_t n, uint32_t d);
 
 void mpi_fdiv_q_2exp(mpi_t q, const mpi_t n, mp_bitcnt_t b);
 void mpi_fdiv_r_2exp(mpi_t r, const mpi_t n, mp_bitcnt_t b);
