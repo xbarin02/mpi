@@ -759,10 +759,15 @@ size_t mpi_sizeinbase(const mpi_t op, int base)
 	return 0;
 }
 
-// FIXME: q, r cannot be the same as n, d
 void mpi_fdiv_qr(mpi_t q, mpi_t r, const mpi_t n, const mpi_t d)
 {
-	if (mpi_cmp_u32(d, 0) == 0) {
+	mpi_t n0, d0;
+	mpi_init(n0);
+	mpi_init(d0);
+	mpi_set(n0, n);
+	mpi_set(d0, d);
+
+	if (mpi_cmp_u32(d0, 0) == 0) {
 		fprintf(stderr, "Division by zero\n");
 		abort();
 	}
@@ -770,18 +775,21 @@ void mpi_fdiv_qr(mpi_t q, mpi_t r, const mpi_t n, const mpi_t d)
 	mpi_set_u32(q, 0);
 	mpi_set_u32(r, 0);
 
-	size_t start = mpi_sizeinbase(n, 2) - 1;
+	size_t start = mpi_sizeinbase(n0, 2) - 1;
 
 	for (size_t i = start; i != (size_t)-1; --i) {
 		mpi_mul_2exp(r, r, 1);
-		if (mpi_tstbit(n, i) != 0) {
+		if (mpi_tstbit(n0, i) != 0) {
 			mpi_setbit(r, 0);
 		}
-		if (mpi_cmp(r, d) >= 0) {
-			mpi_sub(r, r, d);
+		if (mpi_cmp(r, d0) >= 0) {
+			mpi_sub(r, r, d0);
 			mpi_setbit(q, i);
 		}
 	}
+
+	mpi_clear(n0);
+	mpi_clear(d0);
 }
 
 uint32_t mpi_fdiv_qr_u32(mpi_t q, mpi_t r, const mpi_t n, uint32_t d)
