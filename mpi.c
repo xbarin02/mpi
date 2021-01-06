@@ -763,6 +763,7 @@ size_t mpi_sizeinbase(const mpi_t op, int base)
 void mpi_fdiv_qr(mpi_t q, mpi_t r, const mpi_t n, const mpi_t d)
 {
 	if (mpi_cmp_u32(d, 0) == 0) {
+		fprintf(stderr, "Division by zero\n");
 		mpi_set_u32(q, 0);
 		mpi_set(r, n);
 		return;
