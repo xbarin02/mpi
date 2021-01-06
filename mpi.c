@@ -718,3 +718,13 @@ int mpi_divisible_u32_p(const mpi_t n, unsigned long int d)
 {
 	return mpz_fdiv_u32(n, d) == 0;
 }
+
+int mpi_tstbit(const mpi_t op, mp_bitcnt_t bit_index)
+{
+	size_t word = bit_index / 31;
+	size_t bit = bit_index % 31;
+
+	uint32_t r = word < op->nmemb ? op->data[word] : 0;
+
+	return (r >> bit) & 1;
+}
