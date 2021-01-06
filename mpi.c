@@ -884,11 +884,8 @@ size_t mpi_out_str(FILE *stream, int base, const mpi_t op)
 	return ret;
 }
 
-int gmp_fprintf(FILE *fp, const char *fmt, ...)
+int gmp_vfprintf(FILE *fp, const char *fmt, va_list ap)
 {
-	va_list arg;
-	va_start(arg, fmt);
-
 	int ret = 0;
 
 	const char *ptr = fmt;
@@ -929,7 +926,7 @@ int gmp_fprintf(FILE *fp, const char *fmt, ...)
 					mpi_t n;
 					case 1:
 						assert(mod == 'Z');
-						*n = *va_arg(arg, struct mpi *);
+						*n = *va_arg(ap, struct mpi *);
 						ret += mpi_out_str(fp, 10, n);
 						state = 0;
 						break;
@@ -948,7 +945,17 @@ int gmp_fprintf(FILE *fp, const char *fmt, ...)
 		ptr++;
 	}
 exit:
-	va_end(arg);
+	return ret;
+}
+
+int gmp_fprintf(FILE *fp, const char *fmt, ...)
+{
+	va_list ap;
+	va_start(ap, fmt);
+
+	int ret = gmp_vfprintf(fp, fmt, ap);
+
+	va_end(ap);
 
 	return ret;
 }
