@@ -759,6 +759,7 @@ size_t mpi_sizeinbase(const mpi_t op, int base)
 	return 0;
 }
 
+// FIXME: q, r cannot be the same as n, d
 void mpi_fdiv_qr(mpi_t q, mpi_t r, const mpi_t n, const mpi_t d)
 {
 	if (mpi_cmp_u32(d, 0) == 0) {
@@ -785,6 +786,10 @@ void mpi_fdiv_qr(mpi_t q, mpi_t r, const mpi_t n, const mpi_t d)
 
 uint32_t mpi_fdiv_qr_u32(mpi_t q, mpi_t r, const mpi_t n, uint32_t d)
 {
+	mpi_t n0;
+	mpi_init(n0);
+	mpi_set(n0, n);
+
 	if (d == 0) {
 		fprintf(stderr, "Division by zero\n");
 		abort();
@@ -793,11 +798,11 @@ uint32_t mpi_fdiv_qr_u32(mpi_t q, mpi_t r, const mpi_t n, uint32_t d)
 	mpi_set_u32(q, 0);
 	mpi_set_u32(r, 0);
 
-	size_t start = mpi_sizeinbase(n, 2) - 1;
+	size_t start = mpi_sizeinbase(n0, 2) - 1;
 
-	for (size_t i = start+29; i != (size_t)-1; --i) {
+	for (size_t i = start; i != (size_t)-1; --i) {
 		mpi_mul_2exp(r, r, 1);
-		if (mpi_tstbit(n, i) != 0) {
+		if (mpi_tstbit(n0, i) != 0) {
 			mpi_setbit(r, 0);
 		}
 		if (mpi_cmp_u32(r, d) >= 0) {
@@ -807,5 +812,65 @@ uint32_t mpi_fdiv_qr_u32(mpi_t q, mpi_t r, const mpi_t n, uint32_t d)
 		}
 	}
 
+	mpi_clear(n0);
+
 	return mpi_get_u32(r);
+}
+
+size_t mpi_out_str(FILE *stream, int base, const mpi_t op)
+{
+	mpi_t n, r;
+	mpi_init(n);
+	mpi_init(r);
+	mpi_set(n, op);
+
+	assert(base == 10);
+
+	size_t size = 2;
+	char *buffer = malloc(size);
+
+	if (buffer == NULL) {
+		abort();
+	}
+
+	// buffer[i] := digit, buffer[i+1] := \0
+	size_t i = 0;
+
+	while (mpi_cmp_u32(n, 0) != 0) {
+		uint32_t digit = mpi_fdiv_qr_u32(n, r, n, 10);
+
+		buffer[i] = '0' + digit;
+
+		i++;
+
+		if (i == size - 1) {
+			size <<= 1;
+			buffer = realloc(buffer, size);
+
+			if (buffer == NULL) {
+				abort();
+			}
+		}
+	}
+
+	if (i == 0) {
+		buffer[i] = '0';
+		i++;
+	}
+
+	buffer[i] = 0;
+
+	// reverse string
+	for (size_t k = 0, l = i - 1; k < l; ++k, --l) {
+		char t = buffer[k];
+		buffer[k] = buffer[l];
+		buffer[l] = t;
+	}
+
+	int ret = fprintf(stream, "%s", buffer);
+
+	mpi_clear(n);
+	mpi_clear(r);
+
+	return ret;
 }

@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
 
 struct mpi {
 	uint32_t *data;
@@ -74,6 +75,10 @@ mp_bitcnt_t mpi_scan1(const mpi_t op, mp_bitcnt_t starting_bit);
 
 int mpi_tstbit(const mpi_t op, mp_bitcnt_t bit_index);
 void mpi_setbit(mpi_t rop, mp_bitcnt_t bit_index);
+
+/* I/O of Integers */
+
+size_t mpi_out_str(FILE *stream, int base, const mpi_t op);
 
 /* Miscellaneous Functions */
 
