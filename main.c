@@ -675,13 +675,37 @@ int main()
 		mpi_t n;
 		mpi_init(n);
 
-		mpi_set_str(n, "1234567890", 10);
-		mpi_out_str(stdout, 10, n);
-		printf("\n");
+		FILE *fp;
+		char buffer[4096];
+		size_t size;
 
+		fp = fopen("temp", "w");
+		assert(fp != NULL);
+		mpi_set_str(n, "1234567890", 10);
+		mpi_out_str(fp, 10, n);
+		fclose(fp);
+
+		fp = fopen("temp", "r");
+		assert(fp != NULL);
+		size = fread(buffer, 1, 4096, fp);
+		fclose(fp);
+
+		buffer[size] = 0;
+		assert(strcmp(buffer, "1234567890") == 0);
+
+		fp = fopen("temp", "w");
+		assert(fp != NULL);
 		mpi_set_str(n, "0", 10);
-		mpi_out_str(stdout, 10, n);
-		printf("\n");
+		mpi_out_str(fp, 10, n);
+		fclose(fp);
+
+		fp = fopen("temp", "r");
+		assert(fp != NULL);
+		size = fread(buffer, 1, 4096, fp);
+		fclose(fp);
+
+		buffer[size] = 0;
+		assert(strcmp(buffer, "0") == 0);
 
 		mpi_clear(n);
 	}
