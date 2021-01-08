@@ -112,7 +112,7 @@ int llt(mp_bitcnt_t p)
 			mpi_sub(s, s, m);
 		}
 
-		assert(mpi_cmp(s, m) <= 0 );
+		assert(mpi_cmp(s, m) <= 0);
 	}
 
 	int ret = mpi_cmp_u32(s, 0) == 0;
