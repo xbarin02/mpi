@@ -987,6 +987,8 @@ int gmp_vsprintf(char *buf, const char *fmt, va_list ap)
 								buf += size;
 								written += size;
 								break;
+							default:
+								abort();
 						}
 						/* print */
 						state = 0;
@@ -994,6 +996,7 @@ int gmp_vsprintf(char *buf, const char *fmt, va_list ap)
 					case 'u':
 						switch (type) {
 							unsigned u;
+							long unsigned lu;
 							int size;
 							case 0:
 								u = va_arg(ap, unsigned);
@@ -1004,6 +1007,17 @@ int gmp_vsprintf(char *buf, const char *fmt, va_list ap)
 								buf += size;
 								written += size;
 								break;
+							case 'l':
+								lu = va_arg(ap, unsigned long int);
+								size = sprintf(buf, "%lu", lu);
+								if (size < 0) {
+									return -1;
+								}
+								buf += size;
+								written += size;
+								break;
+							default:
+								abort();
 						}
 						state = 0;
 						break;
