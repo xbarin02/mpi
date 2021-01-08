@@ -37,19 +37,6 @@ int collatz_max(const char *n_str, const char *max_str)
 
 	mpi_set(max, n);
 
-#if 0
-	while (0 != mpi_cmp_u32(n, 1)) {
-		if (mpi_odd_p(n)) {
-			mpi_mul_u32(n, n, 3);
-			mpi_add_u32(n, n, 1);
-		}
-		mpi_fdiv_q_2exp(n, n, 1);
-
-		if (mpi_cmp(n, max) > 0) {
-			mpi_set(max, n);
-		}
-	}
-#else
 	while (0 != mpi_cmp_u32(n, 1)) {
 		mp_bitcnt_t alpha, beta;
 
@@ -79,7 +66,6 @@ int collatz_max(const char *n_str, const char *max_str)
 
 		mpi_fdiv_q_2exp(n, n, beta); /* n >>= ctz(n) */
 	}
-#endif
 
 	mpi_set_str(r, max_str, 10);
 
