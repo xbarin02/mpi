@@ -948,15 +948,28 @@ int gmp_vsprintf(char *buf, const char *fmt, va_list ap)
 					case 'Z':
 						type = 'Z';
 						break;
+					case 'l':
+						type = 'l';
+						break;
 					case 'i':
 					case 'd':
 						switch (type) {
 							int i;
+							long int l;
 							mpi_t n;
 							int size;
 							case 0:
 								i = va_arg(ap, int);
 								size = sprintf(buf, "%i", i);
+								if (size < 0) {
+									return -1;
+								}
+								buf += size;
+								written += size;
+								break;
+							case 'l':
+								l = va_arg(ap, long int);
+								size = sprintf(buf, "%li", l);
 								if (size < 0) {
 									return -1;
 								}

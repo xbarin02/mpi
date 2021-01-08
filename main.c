@@ -769,6 +769,9 @@ int main()
 		assert(strcmp(buffer, "i = 42, n = 1234567890\n") == 0);
 
 		mpi_clear(n);
+
+		gmp_sprintf(buffer, "l = %li\n", (long int)1234);
+		assert(strcmp(buffer, "l = 1234\n") == 0);
 	}
 
 	printf("Collatz problem\n");
