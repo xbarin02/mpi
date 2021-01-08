@@ -826,66 +826,6 @@ uint32_t mpi_fdiv_qr_u32(mpi_t q, mpi_t r, const mpi_t n, uint32_t d)
 	return mpi_get_u32(r);
 }
 
-size_t mpi_out_str(FILE *stream, int base, const mpi_t op)
-{
-	mpi_t n, r;
-	mpi_init(n);
-	mpi_init(r);
-	mpi_set(n, op);
-
-	assert(base == 10);
-
-	size_t size = 2;
-	char *buffer = malloc(size);
-
-	if (buffer == NULL) {
-		abort();
-	}
-
-	// buffer[i] := digit, buffer[i+1] := \0
-	size_t i = 0;
-
-	while (mpi_cmp_u32(n, 0) != 0) {
-		uint32_t digit = mpi_fdiv_qr_u32(n, r, n, 10);
-
-		buffer[i] = '0' + digit;
-
-		i++;
-
-		if (i == size - 1) {
-			size <<= 1;
-			buffer = realloc(buffer, size);
-
-			if (buffer == NULL) {
-				abort();
-			}
-		}
-	}
-
-	if (i == 0) {
-		buffer[i] = '0';
-		i++;
-	}
-
-	buffer[i] = 0;
-
-	// reverse string
-	for (size_t k = 0, l = i - 1; k < l; ++k, --l) {
-		char t = buffer[k];
-		buffer[k] = buffer[l];
-		buffer[l] = t;
-	}
-
-	int ret = fprintf(stream, "%s", buffer);
-
-	free(buffer);
-
-	mpi_clear(n);
-	mpi_clear(r);
-
-	return ret;
-}
-
 char *mpi_to_cstr(const mpi_t op, int base)
 {
 	mpi_t n, r;
@@ -940,6 +880,17 @@ char *mpi_to_cstr(const mpi_t op, int base)
 	mpi_clear(r);
 
 	return buffer;
+}
+
+size_t mpi_out_str(FILE *stream, int base, const mpi_t op)
+{
+	char *buffer = mpi_to_cstr(op, base);
+
+	int ret = fprintf(stream, "%s", buffer);
+
+	free(buffer);
+
+	return ret;
 }
 
 int gmp_vfprintf(FILE *fp, const char *fmt, va_list ap)
