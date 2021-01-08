@@ -750,6 +750,27 @@ int main()
 		mpi_clear(n);
 	}
 
+	printf("gmp_sprintf\n");
+	{
+		char buffer[4096];
+
+		int i = 42;
+
+		gmp_sprintf(buffer, "i = %i\n", i);
+
+		assert(strcmp(buffer, "i = 42\n") == 0);
+
+		mpi_t n;
+		mpi_init(n);
+
+		mpi_set_str(n, "1234567890", 10);
+
+		gmp_sprintf(buffer, "i = %i, n = %Zi\n", i, n);
+		assert(strcmp(buffer, "i = 42, n = 1234567890\n") == 0);
+
+		mpi_clear(n);
+	}
+
 	printf("Collatz problem\n");
 	{
 		assert(collatz_max("212581558780141311", "2176718166004315761101410771585688"));

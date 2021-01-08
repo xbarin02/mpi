@@ -82,6 +82,8 @@ size_t mpi_out_str(FILE *stream, int base, const mpi_t op);
 
 int gmp_vfprintf(FILE *fp, const char *fmt, va_list ap);
 int gmp_fprintf(FILE *fp, const char *fmt, ...);
+int gmp_vsprintf(char *buf, const char *fmt, va_list ap);
+int gmp_sprintf(char *buf, const char *fmt, ...);
 
 /* Miscellaneous Functions */
 

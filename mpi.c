@@ -878,10 +878,68 @@ size_t mpi_out_str(FILE *stream, int base, const mpi_t op)
 
 	int ret = fprintf(stream, "%s", buffer);
 
+	free(buffer);
+
 	mpi_clear(n);
 	mpi_clear(r);
 
 	return ret;
+}
+
+char *mpi_to_cstr(const mpi_t op, int base)
+{
+	mpi_t n, r;
+	mpi_init(n);
+	mpi_init(r);
+	mpi_set(n, op);
+
+	assert(base == 10);
+
+	size_t size = 2;
+	char *buffer = malloc(size);
+
+	if (buffer == NULL) {
+		abort();
+	}
+
+	// buffer[i] := digit, buffer[i+1] := \0
+	size_t i = 0;
+
+	while (mpi_cmp_u32(n, 0) != 0) {
+		uint32_t digit = mpi_fdiv_qr_u32(n, r, n, 10);
+
+		buffer[i] = '0' + digit;
+
+		i++;
+
+		if (i == size - 1) {
+			size <<= 1;
+			buffer = realloc(buffer, size);
+
+			if (buffer == NULL) {
+				abort();
+			}
+		}
+	}
+
+	if (i == 0) {
+		buffer[i] = '0';
+		i++;
+	}
+
+	buffer[i] = 0;
+
+	// reverse string
+	for (size_t k = 0, l = i - 1; k < l; ++k, --l) {
+		char t = buffer[k];
+		buffer[k] = buffer[l];
+		buffer[l] = t;
+	}
+
+	mpi_clear(n);
+	mpi_clear(r);
+
+	return buffer;
 }
 
 int gmp_vfprintf(FILE *fp, const char *fmt, va_list ap)
@@ -954,6 +1012,90 @@ int gmp_fprintf(FILE *fp, const char *fmt, ...)
 	va_start(ap, fmt);
 
 	int ret = gmp_vfprintf(fp, fmt, ap);
+
+	va_end(ap);
+
+	return ret;
+}
+
+int gmp_vsprintf(char *buf, const char *fmt, va_list ap)
+{
+	int written = 0;
+	int state = 0;
+	int type = 0;
+
+	while (1) {
+		switch (state) {
+			/* before/after %... sequence */
+			case 0:
+				switch (*fmt) {
+					case '%':
+						state = 1;
+						type = 0;
+						break;
+					default:
+						*buf++ = *fmt;
+						break;
+				}
+				break;
+			/* inside %... sequence */
+			case 1:
+				switch (*fmt) {
+					case '%':
+						*buf++ = '%';
+						state = 0;
+						break;
+					case 'Z':
+						type = 'Z';
+						break;
+					case 'i':
+					case 'd':
+						switch (type) {
+							int i;
+							mpi_t n;
+							int size;
+							case 0:
+								i = va_arg(ap, int);
+								size = sprintf(buf, "%i", i);
+								if (size < 0) {
+									return -1;
+								}
+								buf += size;
+								written += size;
+								break;
+							case 'Z':
+								*n = *va_arg(ap, struct mpi *);
+								char *str = mpi_to_cstr(n, 10);
+								size = sprintf(buf, "%s", str);
+								free(str);
+								if (size < 0) {
+									return -1;
+								}
+								buf += size;
+								written += size;
+								break;
+						}
+						/* print */
+						state = 0;
+						break;
+				}
+				break;
+		}
+		if (*fmt == 0) {
+			break;
+		}
+		fmt++;
+	}
+
+	return written;
+}
+
+int gmp_sprintf(char *buf, const char *fmt, ...)
+{
+	va_list ap;
+	va_start(ap, fmt);
+
+	int ret = gmp_vsprintf(buf, fmt, ap);
 
 	va_end(ap);
 
