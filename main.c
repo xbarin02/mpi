@@ -689,6 +689,24 @@ int main()
 		assert(strcmp(buffer, "f = 123.456001\n") == 0);
 	}
 
+	printf("mpi_gcd\n");
+	{
+		mpi_t a, b, r;
+		mpi_init(a);
+		mpi_init(b);
+		mpi_init(r);
+
+		mpi_set_str(a, "2310", 10);
+		mpi_set_str(b, "46189", 10);
+
+		mpi_gcd(r, a, b);
+		assert(mpi_cmp_u32(r, 11) == 0);
+
+		mpi_clear(a);
+		mpi_clear(b);
+		mpi_clear(r);
+	}
+
 	printf("Collatz problem\n");
 	{
 		assert(collatz_max("212581558780141311", "2176718166004315761101410771585688"));

@@ -1065,3 +1065,24 @@ int gmp_sprintf(char *buf, const char *fmt, ...)
 
 	return ret;
 }
+
+void mpi_gcd(mpi_t rop, const mpi_t op1, const mpi_t op2)
+{
+	// a = op1
+	// b = op2
+	if (mpi_cmp_u32(op2, 0) == 0) {
+		mpi_set(rop, op1);
+		return;
+	}
+
+	mpi_t q, r;
+	mpi_init(q);
+	mpi_init(r);
+
+	mpi_fdiv_qr(q, r, op1, op2);
+
+	mpi_gcd(rop, op2, r);
+
+	mpi_clear(q);
+	mpi_clear(r);
+}

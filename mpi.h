@@ -64,6 +64,10 @@ int mpi_divisible_u32_p(const mpi_t n, unsigned long int d);
 
 void mpi_ui_pow_u32(mpi_t rop, uint32_t base, uint32_t exp);
 
+/* Number Theoretic Functions */
+
+void mpi_gcd(mpi_t rop, const mpi_t op1, const mpi_t op2);
+
 /* Comparison Functions */
 
 int mpi_cmp(const mpi_t op1, const mpi_t op2);
