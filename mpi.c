@@ -1021,6 +1021,24 @@ int gmp_vsprintf(char *buf, const char *fmt, va_list ap)
 						}
 						state = 0;
 						break;
+					case 'f':
+						switch (type) {
+							double f;
+							int size;
+							case 0:
+								f = va_arg(ap, double);
+								size = sprintf(buf, "%f", f);
+								if (size < 0) {
+									return -1;
+								}
+								buf += size;
+								written += size;
+								break;
+							default:
+								abort();
+						}
+						state = 0;
+						break;
 					default:
 						/* unhandled */
 						abort();

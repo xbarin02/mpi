@@ -684,6 +684,9 @@ int main()
 
 		gmp_sprintf(buffer, "lu = %lu\n", 1234LU);
 		assert(strcmp(buffer, "lu = 1234\n") == 0);
+
+		gmp_sprintf(buffer, "f = %f\n", 123.456f);
+		assert(strcmp(buffer, "f = 123.456001\n") == 0);
 	}
 
 	printf("Collatz problem\n");
