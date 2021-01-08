@@ -708,6 +708,8 @@ int main()
 		assert(llt(15) == 0);
 		assert(llt(17) == 1);
 		assert(llt(19) == 1);
+		assert(llt(23) == 0);
+		assert(llt(25) == 0);
 		assert(llt(31) == 1);
 		assert(llt(61) == 1);
 		assert(llt(89) == 1);
